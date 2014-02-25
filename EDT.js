@@ -26,6 +26,7 @@ var EDT = {
 		}
 		if(type=='group'){
 			$.get(EDT.ajax_url,function(html){
+				$('#page').html("Chargement de la liste des groups ...");
 				var groups={};
 				$(html).find(".ttlink")
 					.filter(function(){return this.attributes.href.value[0]=='g'})
@@ -41,7 +42,6 @@ var EDT = {
 					+'</div></td></tr>';}).join('')
 				+'</table>');
 			});
-			return "Chargement de la liste des groups ...";
 		}
 	},
 	ajax_url:'http://univ-tlse.appspot.com/edt/',
@@ -51,10 +51,6 @@ var EDT = {
 		if(!confirm('Etes-vous bien en '+d.promo+' Groupe '+d.group+' ? (#'+d.id+')'))return;
 		localStorage.myGroup=d.id;
 		if(confirm('Groupe enregistré !\nAfficher votre nouvel emplois du temps ?'))location.hash="EDT/show/all";
-	},
-	get: function (path,cb,nocache){
-		Notify('Downloading #'+id+'...');
-		$.get('http://univ-tlse.appspot.com/'+path);
 	},
 	parse: function (xml) {
 		function qsa(elem,path) {
@@ -96,8 +92,7 @@ var EDT = {
 			event.date=getEventDate(event,weeks);
 			return event;
 		}).sort(function (a,b){return a.date-b.date;});
-		Notify('Load done ('+weeks.length+' weeks, '+events.length+' events)');
-		window.edt={weeks:weeks,events:events};
+		//window.edt={weeks:weeks,events:events};
 		return {weeks:weeks,events:events};
 	}
 };

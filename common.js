@@ -1,14 +1,16 @@
 $(function(){
 	if($('.navbar-fixed-top').size())$('body').css('padding-top','50px');
 	$('body>nav').fadeOut(0).html(BootstrapMenu(myMenu)).slideDown();
-	(onhashchange=function(event){
-		var url=(event.newURL.match(/#.*/)||['#'])[0].substr(1).split(/\//g);
-		if(!url[0] || !window[url[0]])
-			return $('body>.container').html(url[0]+' : class not found')
-		var result=window[url[0]][url[1]+'Page'].apply(this,url.slice(2));
-		if(result)$('body>.container').html(result);
-	})({newURL:location.href});
+	onhashchange({newURL:location.href});
 });
+
+onhashchange=function(event){
+	var url=(event.newURL.match(/#.*/)||['#'])[0].substr(1).split(/\//g);
+	if(!url[0] || !window[url[0]])
+		return $('body>.container').html(url[0]+' : class not found')
+	var result=window[url[0]][url[1]+'Page'].apply(this,url.slice(2));
+	if(result)$('body>.container').html(result);
+};
 
 $.ajaxPrefilter(function(opt,_opt,jqXHR){
 	var value=localStorage.getItem(opt.url);
@@ -23,9 +25,3 @@ $.ajaxPrefilter(function(opt,_opt,jqXHR){
 		};
 	}
 });
-
-Page={
-	index:function(){
-		return "home sweet home";
-	}
-}

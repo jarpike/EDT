@@ -1,9 +1,3 @@
-
-Date.prototype.getWeek = function () {
-	var j = new Date(this.getFullYear(), 0, 1);
-	return Math.ceil((((this - j) / 864e5) + j.getDay() + 1) / 7) - 1;
-};
-
 var EDT = {
 	showPage:function(type){
 		if(!localStorage.myGroup)
@@ -12,10 +6,15 @@ var EDT = {
 			var timetable=(new DOMParser()).parseFromString(xml,"text/xml").documentElement;
 			$('#page').html('');
 			EDT.parse(timetable).events.forEach(function(e){
-				$('#page').append('<p>'+e.date.toLocaleString()+' <b>'+e.room.replace(/FSI \/ /,'')+'</b> '+e.name+' <i>'+e.type+'</i></p>')
+				$('#page').append('<div>'+[
+						e.date.getMonth()+'/'+e.date.getDate(),
+						e.date.getHours()+'h'+e.date.getMinutes(),
+						'<div class="btn-group btn-group-sm"><button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">'+e.name+' <span class="caret"></span></button><ul class="dropdown-menu"><li><a>hide</a></li></ul></div>'+
+						'<a>'+e.room.replace(/FSI \/ /,'')+'</a>',
+//						'<i>'+e.type+'</i>',
+					].join(' ')+'</div>')
 			})
 		});
-//		return "Chargement de l'emplois du temp";
 	},
 	setPage:function(type){
 		if(type=='clear'){
@@ -38,12 +37,13 @@ var EDT = {
 					});
 				$('#page').html('<table class="table table-striped table-condensed">'+
 					$.map(groups,function(v,n){return '<tr><td>'+n+'</td><td><div class="btn-group">'+
-						$.map(v,function(v){return '<button type="button" class="btn btn-default" data-id="'+v.id+'" data-group="'+v.group+'" data-promo="'+v.promo+'" onclick="EDT.register(this)">'+v.group+'</button>';}).join('')
+						$.map(v,function(v){return '<button type="button" class="btn btn-sm btn-default '+(v.id==localStorage.myGroup?'active':'')+'" data-id="'+v.id+'" data-group="'+v.group+'" data-promo="'+v.promo+'" onclick="EDT.register(this)">'+v.group+'</button>';}).join('')
 					+'</div></td></tr>';}).join('')
 				+'</table>');
 			});
 		}
 	},
+	
 	ajax_url:'http://univ-tlse.appspot.com/edt/',
 //internal methodes
 	register:function(btn){
@@ -52,7 +52,7 @@ var EDT = {
 		localStorage.myGroup=d.id;
 		if(confirm('Groupe enregistré !\nAfficher votre nouvel emplois du temps ?'))location.hash="EDT/show/all";
 	},
-	parse: function (xml) {
+	parse:function(xml){
 		function qsa(elem,path) {
 			var e=elem.querySelectorAll(path);
 			return e?[].slice.call(e).map(function (a) {return a.textContent;}):[];
@@ -93,6 +93,7 @@ var EDT = {
 			return event;
 		}).sort(function (a,b){return a.date-b.date;});
 		//window.edt={weeks:weeks,events:events};
+		console.log({weeks:weeks,events:events});
 		return {weeks:weeks,events:events};
 	}
 };

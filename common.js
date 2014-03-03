@@ -6,10 +6,14 @@ $(function(){
 
 onhashchange=function(event){
 	var url=(event.newURL.match(/#.*/)||['#'])[0].substr(1).split(/\//g);
-	if(!url[0] || !window[url[0]])
-		return $('body>.container').html(url[0]+' : class not found')
-	var result=window[url[0]][url[1]+'Page'].apply(this,url.slice(2));
-	if(result)$('body>.container').html(result);
+	//find the controller
+	var ctrl_name=url[0]+"Controller",ctrl=window[ctrl_name];
+	if(!ctrl)return $('body>.container').html(ctrl_name+" : not found");
+	//find the page function
+	var page_name=url[1]+"Page",page=window[ctrl_name][page_name];
+	if(!page)return $('body>.container').html(page_name+" : not found in "+ctrl_name);
+	//call the page function
+	page.apply(this,url.slice(2));
 };
 
 $.ajaxPrefilter(function(opt,_opt,jqXHR){
@@ -25,3 +29,8 @@ $.ajaxPrefilter(function(opt,_opt,jqXHR){
 		};
 	}
 });
+
+Date.prototype.getWeek = function () {
+	var j = new Date(this.getFullYear(), 0, 1);
+	return Math.ceil((((this - j) / 864e5) + j.getDay() + 1) / 7) - 1;
+};

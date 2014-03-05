@@ -5,15 +5,24 @@ $(function(){
 });
 
 onhashchange=function(event){
-	var url=(event.newURL.match(/#.*/)||['#'])[0].substr(1).split(/\//g);
+	function getHash(url){return (url.match(/#.*/)||['#'])[0];}
+	
+	if(onhashchange.internal==getHash(event.newURL))
+		return onhashchange.internal = false;
+	
+	onresize=null;//reset on resize callback
+	var $target=$('body>.container');
+	var url=getHash(event.newURL).substr(1).split(/\//g);
 	//find the controller
-	var ctrl_name=url[0]+"Controller",ctrl=window[ctrl_name];
-	if(!ctrl)return $('body>.container').html(ctrl_name+" : not found");
+	var ctrl_name=(url[0]||'')+"Controller",ctrl=window[ctrl_name];
+	if(!ctrl)return $target.html(ctrl_name+" : not found");
 	//find the page function
-	var page_name=url[1]+"Page",page=window[ctrl_name][page_name];
-	if(!page)return $('body>.container').html(page_name+" : not found in "+ctrl_name);
+	var page_name=(url[1]||'')+"Page",page=window[ctrl_name][page_name];
+	if(!page)return $target.html(page_name+" : not found in "+ctrl_name);
 	//call the page function
-	page.apply(this,url.slice(2));
+	var result=page.apply($target,url.slice(2));
+	if(result===false)
+		return onhashchange.internal=document.location.hash=getHash(event.oldURL);
 };
 
 $.ajaxPrefilter(function(opt,_opt,jqXHR){

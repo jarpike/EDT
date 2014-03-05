@@ -3,30 +3,29 @@ var myMenu={
 		myAgenda:"#",
 	},
 	left :{
-		EDT:{
-			'Afficher :':{
-				Tout:"#EDT/show/all",
-				Mois:"#EDT/show/month",
-				Semaine:"#EDT/show/week",
-				Jour:"#EDT/show/day",
-				YOLO:"#EDT/show/yolo",
-			},
-			'Paramètres :':{
-				Changer_de_Groupe:"#EDT/set/group",
-				Reset:"#EDT/set/clear",
-			},
-		},
+		EDT:"#EDT/show",
 		DM:"#DM",
-		Charge:"#Graph",
-		Actu:"#Actu",
+//		Charge:"#Graph",
+//		Actu:"#Actu",
+//		Search:$('<form class="navbar-form">')
+//			.append($('<input>').attr({type:"search",name:"room",placeholder:"Recherche salle"}).addClass('form-control'))
+//			.submit(function(){
+//				BootstrapMenu.hide();location.hash='room/search/'+this.room.value;return false;
+//			})
 	},
 	right:{
-		Search:$('<form>')
-			.addClass('navbar-form')
-			.append($('<input>').attr({type:"search",name:"room",placeholder:"Recherche salle"}).addClass('form-control'))
-			.submit(function(){
-				BootstrapMenu.hide();location.hash='room/search/'+this.room.value;return false;
-			})
+		Options:{
+			'EDT :':{
+				Affichage:$('<select class="form-control">').append(['jour','semaine','mois','an'].map(function(a){return '<option '+(localStorage.edtView==a?"selected":"")+'value="'+a+'">Par '+a+"</option>"}))
+					.click(function(e){e.stopPropagation();})
+					.change(function(e){localStorage.edtView=$(this).val()}),
+				Mon_Groupe:"#EDT/set/group",
+				RAZ_Matieres:"#EDT/clear/group",
+			},
+			'Globale :':{
+				Reset:"#/clear",
+			}
+		}
 	}
 }
 

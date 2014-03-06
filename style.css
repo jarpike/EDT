@@ -1,0 +1,35 @@
+@media(max-width:767px){.navbar-form{margin:0;}}
+.dropdown-menu > .divider:first-child {display: none;}
+a{cursor:pointer;}
+#marker{
+	color:#FFF;
+	left:0;top:0;
+	position:absolute;
+	white-space: nowrap;
+	transition: all 2s ease-in-out;
+}
+#marker>b{
+	color:#F00;
+	text-shadow: -1px 1px 1px #000, 1px 1px 1px #000, -1px -1px 1px #000, 1px -1px 1px #000;
+}
+#marker>span{
+	color:#000;
+	background:#FFF;
+	border:1px solid #000;
+}
+#imcont{
+	position:relative;
+	overflow:scroll;
+}
+.charico .glyphicon{
+	display: block;
+	text-align:center;
+	font-size:  70px;
+}
+.charico h2{
+	display:block;
+	text-align:center;
+}
+@media (min-width:  768px){.charico .glyphicon{font-size:  75px;}}
+@media (min-width:  992px){.charico .glyphicon{font-size:  97px;}}
+@media (min-width: 1200px){.charico .glyphicon{font-size: 117px;}}

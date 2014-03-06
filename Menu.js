@@ -5,6 +5,7 @@ var myMenu={
 	left :{
 		EDT:"#EDT/show",
 		DM:"#DM",
+		Map:"#Map",
 //		Charge:"#Graph",
 //		Actu:"#Actu",
 //		Search:$('<form class="navbar-form">')
@@ -21,6 +22,9 @@ var myMenu={
 					.change(function(e){localStorage.edtView=$(this).val()}),
 				Mon_Groupe:"#EDT/set/group",
 				RAZ_Matieres:"#EDT/clear/group",
+			},
+			'Map :':{
+				Zoom:"#Map/zoom",
 			},
 			'Globale :':{
 				Reset:"#/clear",

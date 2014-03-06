@@ -6,12 +6,14 @@ $(function(){
 
 onhashchange=function(event){
 	function getHash(url){return (url.match(/#.*/)||['#'])[0];}
-	
+	//don't change url on internal job
 	if(onhashchange.internal==getHash(event.newURL))
 		return onhashchange.internal = false;
-	
-	onresize=null;//reset on resize callback
-	var $target=$('body>.container');
+	//reset to default values
+	onresize=null;
+	$('#page').parent().removeClass().addClass('container')
+	//init var
+	var $target=$('#page');
 	var url=getHash(event.newURL).substr(1).split(/\//g);
 	//find the controller
 	var ctrl_name=(url[0]||'')+"Controller",ctrl=window[ctrl_name];

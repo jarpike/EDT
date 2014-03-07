@@ -42,6 +42,7 @@ $.ajaxPrefilter(function(opt,_opt,jqXHR){
 });
 
 Date.prototype.getWeek = function () {
-	var j = new Date(this.getFullYear(), 0, 1);
-	return Math.ceil((((this - j) / 864e5) + j.getDay() + 1) / 7) - 1;
-};
+	var tmp = new Date(this.valueOf());
+	tmp.setDate(tmp.getDate() - ((this.getDay()+6)%7)+3);
+	return Math.ceil(((tmp - new Date(tmp.getFullYear(),0,4))/864e5)/7);
+}

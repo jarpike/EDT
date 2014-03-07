@@ -202,8 +202,8 @@ EDTController={
 		var now=new Date();
 		now=new Date(6*60*60*1000+1*now);//+6h shifted date
 		events=events.filter(function(e){return e.date.getWeek()==now.getWeek() && e.date.getDay()==now.getDay()});
-		if(!events.length)return this.html("<h2>Pas de cours aujourd'hui</h2>");
-		this.html('<h1>'+now.toLocaleDateString()+'</h1>');
+		if(!events.length)return this.html("<h2>Pas cours aujourd'hui :)</h2>");
+		this.html('<h2>'+now.toLocaleDateString()+'</h2>');
 		events.forEach(function(e){
 			e.salle=e.room.replace(/FSI ?\/ ?/g,'').replace(/"/g,"");
 			$('#page').append($('.templateContainer[name=byDay]').html().replace(/{{(.*?)}}/g,function(a,b){return eval(b);}))
@@ -211,10 +211,10 @@ EDTController={
 	},
 	showByWeek:function(events,names){
 		var now=new Date();
-		now=new Date(48*60*60*1000+1*now);//+2d shifted date
+		now=new Date(2*24*60*60*1000+1*now);//+2d shifted date
 		events=events.filter(function(e){return e.date.getWeek()==now.getWeek()});
-		if(!events.length)return this.html("<h2>Pas de cours cette semaine</h2>");
-		this.html('<h1>Cette semaine :</h1>');
+		if(!events.length)return this.html("<h2>Aucun cours cette semaine</h2>");
+		this.html('<h2>Cette semaine :</h2>');
 		events.forEach(function(e){
 			e.salle=e.room.replace(/FSI ?\/ ?/g,'').replace(/"/g,"");
 			$('#page').append($('.templateContainer[name=byWeek]').html().replace(/{{(.*?)}}/g,function(a,b){return eval(b);}))
@@ -224,14 +224,14 @@ EDTController={
 		var now=new Date();
 		events=events.filter(function(e){return e.date.getMonth()==now.getMonth()});
 		if(!events.length)return this.html("<h2>Aucun cours ce mois ci</h2>");
-		this.html('<h1>Ce mois ci :</h1>');
+		this.html('<h2>Ce mois ci :</h2>');
 		events.forEach(function(e){
 			e.salle=e.room.replace(/FSI ?\/ ?/g,'').replace(/"/g,"");
 			$('#page').append($('.templateContainer[name=byMonth]').html().replace(/{{(.*?)}}/g,function(a,b){return eval(b);}))
 		});
 	},
 	showByYear:function(events,names){
-		this.html('<h1>Emplois du temp complet :</h1>');
+		this.html('<h2>Emplois du temp complet :</h2>');
 		events.forEach(function(e){
 			e.salle=e.room.replace(/FSI ?\/ ?/g,'').replace(/"/g,"");
 			$('#page').append($('.templateContainer[name=byYear]').html().replace(/{{(.*?)}}/g,function(a,b){return eval(b);}))

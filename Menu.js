@@ -21,11 +21,15 @@ var myMenu={
 	right:{
 		Options:{
 			'EDT :':{
-				Affichage:$('<select class="form-control">').append(views.map(function(a){return $('<option value="'+a.value+'">').html(a.name)})).val(localStorage.edtView)
+				Affichage:$('<select class="form-control">').append(views
+					.map(function(a){return $('<option value="'+a.value+'">').html(a.name)})).val(localStorage.edtView)
 					.click(function(e){e.stopPropagation();})
 					.change(function(e){
 						localStorage.edtView=$(this).val();
-						if(location.hash=="#EDT/show")onhashchange({newURL:location.href});
+						BootstrapMenu.hide();
+						if(location.hash=="#EDT/show"){
+							onhashchange({newURL:location.href});
+						}
 					}),
 				Mon_Groupe:"#EDT/set/group",
 				RAZ_Matieres:"#EDT/clear/UE",
@@ -39,7 +43,10 @@ var myMenu={
 							$(this).parent().find('.active').removeClass('active');
 							$(this).addClass('active');
 							localStorage.planZoom=a.value;
-							if(location.hash.match("#Map"))onhashchange({newURL:location.href});
+							if(location.hash.match("#Map")){
+								BootstrapMenu.hide();
+								onhashchange({newURL:location.href});
+							}
 							});
 				}))),
 			},

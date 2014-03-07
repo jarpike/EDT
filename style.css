@@ -1,6 +1,7 @@
 @media(max-width:767px){.navbar-form{margin:0;}}
 .dropdown-menu > .divider:first-child {display: none;}
 a{cursor:pointer;}
+.templateContainer{display:none;}
 #marker{
 	color:#FFF;
 	left:0;top:0;

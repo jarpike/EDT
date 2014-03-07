@@ -198,53 +198,86 @@ EDTController={
 		dms.push(myDM);
 		localStorage.DM=JSON.stringify(dms);
 	},
+	showByDay:function(events,names){
+		var now=new Date();
+		now=new Date(6*60*60*1000+1*now);//+6h shifted date
+		events=events.filter(function(e){return e.date.getWeek()==now.getWeek() && e.date.getDay()==now.getDay()});
+		if(!events.length)return this.html("<h2>Pas de cours aujourd'hui</h2>");
+		this.html('<h1>'+now.toLocaleDateString()+'</h1>');
+		events.forEach(function(e){
+			e.salle=e.room.replace(/FSI ?\/ ?/g,'').replace(/"/g,"");
+			$('#page').append($('.templateContainer[name=byDay]').html().replace(/{{(.*?)}}/g,function(a,b){return eval(b);}))
+		});
+	},
+	showByWeek:function(events,names){
+		var now=new Date();
+		now=new Date(48*60*60*1000+1*now);//+2d shifted date
+		events=events.filter(function(e){return e.date.getWeek()==now.getWeek()});
+		if(!events.length)return this.html("<h2>Pas de cours cette semaine</h2>");
+		this.html('<h1>Cette semaine :</h1>');
+		events.forEach(function(e){
+			e.salle=e.room.replace(/FSI ?\/ ?/g,'').replace(/"/g,"");
+			$('#page').append($('.templateContainer[name=byWeek]').html().replace(/{{(.*?)}}/g,function(a,b){return eval(b);}))
+		});
+	},
+	showByMonth:function(events,names){
+		var now=new Date();
+		events=events.filter(function(e){return e.date.getMonth()==now.getMonth()});
+		if(!events.length)return this.html("<h2>Aucun cours ce mois ci</h2>");
+		this.html('<h1>Ce mois ci :</h1>');
+		events.forEach(function(e){
+			e.salle=e.room.replace(/FSI ?\/ ?/g,'').replace(/"/g,"");
+			$('#page').append($('.templateContainer[name=byMonth]').html().replace(/{{(.*?)}}/g,function(a,b){return eval(b);}))
+		});
+	},
+	showByYear:function(events,names){
+		this.html('<h1>Emplois du temp complet :</h1>');
+		events.forEach(function(e){
+			e.salle=e.room.replace(/FSI ?\/ ?/g,'').replace(/"/g,"");
+			$('#page').append($('.templateContainer[name=byYear]').html().replace(/{{(.*?)}}/g,function(a,b){return eval(b);}))
+		});
+	},
 //Pages
 	showPage:function(){
 		if(!localStorage.edtGroup)
 			return this.html('<h1>Oups ! Aucun group choisi !</h1><h1><small>Pourquoi ne pas aller en <a href="#EDT/set/group">choisir</a> un ?</small></h1>');
 		this.html('<h2>Récupération des données ...</h2>');
+		$page=this;
 		$.ajax(EDT.ajax_url+localStorage.edtGroup,{
 			success:function(xml){
-				var names=JSON.parse(localStorage.edtUEname||'{}');
 				var hides=JSON.parse(localStorage.edtUEhide||'[]');
+				var names=JSON.parse(localStorage.edtUEname||'{}');
 				var timetable=(new DOMParser()).parseFromString(xml,"text/xml").documentElement;
-				$('#page').html('');
-				EDT.parse(timetable).events.forEach(function(e){
-					if(hides.indexOf(e.name)>=0)return;
-					var salle=e.room.replace(/FSI ?\/ ?/g,'').replace(/"/g,"");
-					$('#page').append('<div>'+[
-							e.date.getMonth()+1+'/'+(e.date.getDate()   <10?'0':'')+e.date.getDate(),
-							e.date.getHours()  +'h'+(e.date.getMinutes()<10?'0':'')+e.date.getMinutes(),
-							'<div class="btn-group">'+
-								'<button type="button" class="btn btn-link dropdown-toggle" data-toggle="dropdown">'+(names[e.name]||e.name||'?')+' <span class="caret"></span></button>'+
-								'<ul class="dropdown-menu">'+
-									'<li><a onclick="EDTController.hideUE(\''+e.name+'\')">Cacher</a></li>'+
-									'<li><a onclick="EDTController.renameUE(\''+e.name+'\')">Renommer</a></li>'+
-									'<li><a onclick="EDTController.addDM(\''+e.name+'\')">Ajouter DM</a></li>'+
-									'<li><a onclick="EDTController.getInfo(\''+encodeURI(JSON.stringify(e))+'\')">Info brute</a></li>'+
-								'</ul></div>'+
-							'<a href="#Map/search/'+salle+'">'+salle+'</a>',
-	//						'<i>'+e.type+'</i>',
-						].join(' ')+'</div>')
-				})
+				var evts=EDT.parse(timetable).events.filter(function(e){return hides.indexOf(e.name)==-1;});
+				var methName='showBy'+(localStorage.edtView||"Year");
+				try{
+				EDTController[methName].call($page,evts,names);
+				}catch(e){alert(methName)}
 			},
 			error:function(xhr,msg){
 				$page.html("erreur lors de la récupération de l'emplois du temp : "+msg);
 			}
 		});
 	},
-	clearPage:function(){
-		if(confirm('effacer toute vos préférences ?')){
-			for(var pref in localStorage)
-				if(pref.match(/^edt/))localStorage.removeItem(pref);
-			location.hash="";
-			alert("Préférence reinitialisées");
-		}
+	clearPage:function(type){
+		if(type=="UE"){
+			localStorage.edtUEhide="[]";
+			alert("Toute vos UE sont de nouveau affichées.");
+		}else
+		if(type=="all"){
+			if(confirm('effacer toute vos préférences ?')){
+				for(var pref in localStorage)
+					if(pref.match(/^edt/))localStorage.removeItem(pref);
+				location.hash="";
+				alert("Préférence reinitialisées");
+			}
+		}else alert(type)
+		return false;
 	},
 	setPage:function(type){
 		if(type=='group'){
 			$page=this;
-			$page.html("Chargement de la liste des groups ...");
+			$page.html('<div class="progress progress-striped active"><div class="progress-bar" style="width: 100%">Chargement de la liste des groups ...</div></div>');
 			$.ajax(EDT.ajax_url,{
 				success:function(html){
 					//group by cursus name

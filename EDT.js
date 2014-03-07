@@ -1,5 +1,3 @@
-localStorage.edtView=localStorage.edtView||"week";
-
 var EDT = {
 	ajax_url:localStorage.edtURL||'http://univ-tlse.appspot.com/edt/',
 	
@@ -44,7 +42,6 @@ var EDT = {
 			return event;
 		}).sort(function (a,b){return a.date-b.date;});
 		//window.edt={weeks:weeks,events:events};
-		console.log({weeks:weeks,events:events});
 		return {weeks:weeks,events:events};
 	}
 };

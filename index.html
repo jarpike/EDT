@@ -15,6 +15,66 @@
 	<body>
 		<nav class="navbar navbar-inverse navbar-fixed-top"></nav>
 		<div class="container"><div class="row" id="page"></div></div>
+		<pre class="templateContainer" name="byYear">
+			<div>
+			{{e.date.getMonth()+1}}/{{e.date.getDate()}} {{e.date.getHours()}}h{{e.date.getMinutes()}}
+			<div class="btn-group">
+				<button type="button" class="btn btn-link dropdown-toggle" data-toggle="dropdown">{{(names[e.name]||e.name||'?')}} <span class="caret"></span></button>
+				<ul class="dropdown-menu">
+					<li><a onclick="EDTController.hideUE('{{e.name}}')">Cacher</a></li>
+					<li><a onclick="EDTController.renameUE('{{e.name}}')">Renommer</a></li>
+					<li><a onclick="EDTController.addDM('{{e.name}}')">Ajouter DM</a></li>
+					<li><a onclick="EDTController.getInfo('{{encodeURI(JSON.stringify(e))}}')">Info brute</a></li>
+				</ul>
+			</div>
+			<a href="#Map/search/{{e.salle}}">{{e.salle}}</a>
+			</div>
+		</pre>
+		<pre class="templateContainer" name="byMonth">
+			<div>
+			{{e.date.getMonth()+1}}/{{e.date.getDate()}} {{e.date.getHours()}}h{{e.date.getMinutes()}}
+			<div class="btn-group">
+				<button type="button" class="btn btn-link dropdown-toggle" data-toggle="dropdown">{{(names[e.name]||e.name||'?')}} <span class="caret"></span></button>
+				<ul class="dropdown-menu">
+					<li><a onclick="EDTController.hideUE('{{e.name}}')">Cacher</a></li>
+					<li><a onclick="EDTController.renameUE('{{e.name}}')">Renommer</a></li>
+					<li><a onclick="EDTController.addDM('{{e.name}}')">Ajouter DM</a></li>
+					<li><a onclick="EDTController.getInfo('{{encodeURI(JSON.stringify(e))}}')">Info brute</a></li>
+				</ul>
+			</div>
+			<a href="#Map/search/{{e.salle}}">{{e.salle}}</a>
+			</div>
+		</pre>
+		<pre class="templateContainer" name="byWeek">
+			<div>
+			{{['dim','lun','mar','mer','jeu','ven','sam'][e.date.getDay()]}} {{e.date.getHours()}}h{{e.date.getMinutes()}}
+			<div class="btn-group">
+				<button type="button" class="btn btn-link dropdown-toggle" data-toggle="dropdown">{{(names[e.name]||e.name||'?')}} <span class="caret"></span></button>
+				<ul class="dropdown-menu">
+					<li><a onclick="EDTController.hideUE('{{e.name}}')">Cacher</a></li>
+					<li><a onclick="EDTController.renameUE('{{e.name}}')">Renommer</a></li>
+					<li><a onclick="EDTController.addDM('{{e.name}}')">Ajouter DM</a></li>
+					<li><a onclick="EDTController.getInfo('{{encodeURI(JSON.stringify(e))}}')">Info brute</a></li>
+				</ul>
+			</div>
+			<a href="#Map/search/{{e.salle}}">{{e.salle}}</a>
+			</div>
+		</pre>
+		<pre class="templateContainer" name="byDay">
+			<div>
+			{{e.date.getHours()}}h{{e.date.getMinutes()}}
+			<div class="btn-group">
+				<button type="button" class="btn btn-link dropdown-toggle" data-toggle="dropdown">{{(names[e.name]||e.name||'?')}} <span class="caret"></span></button>
+				<ul class="dropdown-menu">
+					<li><a onclick="EDTController.hideUE('{{e.name}}')">Cacher</a></li>
+					<li><a onclick="EDTController.renameUE('{{e.name}}')">Renommer</a></li>
+					<li><a onclick="EDTController.addDM('{{e.name}}')">Ajouter DM</a></li>
+					<li><a onclick="EDTController.getInfo('{{encodeURI(JSON.stringify(e))}}')">Info brute</a></li>
+				</ul>
+			</div>
+			<a href="#Map/search/{{e.salle}}">{{e.salle}}</a>
+			</div>
+		</pre>
 		<script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
 		<script src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
 		<script src="common.js"></script>

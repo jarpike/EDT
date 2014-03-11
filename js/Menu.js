@@ -1,14 +1,3 @@
-var views=[
-	{name:'Par jour',value:'Day'},
-	{name:'Par semaine',value:'Week'},
-	{name:'Par mois',value:'Month'},
-	{name:'Tout',value:'Year'}
-];
-var zoom=[
-	{name:'&#189;',value:2 },
-	{name:'1'     ,value:1 },
-	{name:'2'     ,value:.5},
-];
 var myMenu={
 	brand:{
 		myAgenda:"#",
@@ -19,46 +8,29 @@ var myMenu={
 		Map:"#Map",
 	},
 	right:{
-		Options:{
+		'-cog':{
 			'EDT :':{
-				Affichage:$('<select class="form-control">').append(views
-					.map(function(a){return $('<option value="'+a.value+'">').html(a.name)})).val(localStorage.edtView)
-					.click(function(e){e.stopPropagation();})
-					.change(function(e){
-						localStorage.edtView=$(this).val();
-						BootstrapMenu.hide();
-						if(location.hash=="#EDT/show"){
-							onhashchange({newURL:location.href});
-						}
-					}),
-				Mon_Groupe:"#EDT/set/group",
+				Affichage:EDTController.createMenu,
+				Mon_Groupe:"#EDT/group",
 				RAZ_Matieres:"#EDT/clear/UE",
 				RAZ_EDT:"#EDT/clear/all",
 			},
 			'Map zoom :':{
-				//todo refactor
-				Zoom:$('<a>').append($('<div class="btn-group">').append($.map(zoom,function(a){
-					return $('<button type="button" class="'+(localStorage.planZoom==a.value?'active':'')+' btn btn-default">').html(a.name)
-						.click(function(){
-							$(this).parent().find('.active').removeClass('active');
-							$(this).addClass('active');
-							localStorage.planZoom=a.value;
-							if(location.hash.match("#Map")){
-								BootstrapMenu.hide();
-								onhashchange({newURL:location.href});
-							}
-							});
-				}))),
+				Zoom:MapController.createMenu,
 			},
-			'Globale :':{
-				Reset:"#/clear",
-			}
+			'Remise à zéro :':{
+				RAZ:Controller.createMenu,
+			},
 		}
 	}
 }
 
 function BootstrapMenu(menu){
 	function entry2bootstrap(entry,name,rec){
+		if(name[0]=='-')name='<span class="glyphicon glyphicon'+name+'"></span>';
+		
+		if(entry.constructor==Function)
+			entry=entry();
 		if(entry.constructor==$)
 			return $('<li>').append(entry);
 		if(entry.constructor==String){

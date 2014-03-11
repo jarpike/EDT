@@ -1,0 +1,28 @@
+<script>
+EDTController.showByWeek=function(events,names,template){
+	var now=new Date();
+	now=new Date(2*24*60*60*1000+1*now);//+2d shifted date
+	events=events.filter(function(e){return e.date.getWeek()==now.getWeek()});
+	if(!events.length)return this.html("<h2>Aucun cours cette semaine</h2>");
+	this.html('<h2>Cette semaine :</h2>');
+	events.forEach(function(e){
+		e.salle=e.room.replace(/FSI ?\/ ?/g,'').replace(/"/g,"");
+		this.append(template.replace(/{{(.*?)}}/g,function(a,b){return eval(b);}))
+	},this);
+};
+</script>
+<pre class="templateContainer" name="byWeek">
+	<div>
+	{{e.date.getFullDay()}} {{e.date.getHours()}}h{{e.date.getMinutes()}}
+	<div class="btn-group">
+		<button type="button" class="btn btn-link dropdown-toggle" data-toggle="dropdown">{{(names[e.name]||e.name||'?')}} <span class="caret"></span></button>
+		<ul class="dropdown-menu">
+			<li><a onclick="EDTController.hideUE('{{e.name}}')">Cacher</a></li>
+			<li><a onclick="EDTController.renameUE('{{e.name}}')">Renommer</a></li>
+			<li><a onclick="EDTController.addDM('{{e.name}}')">Ajouter DM</a></li>
+			<li><a onclick="EDTController.getInfo('{{encodeURI(JSON.stringify(e))}}')">Info brute</a></li>
+		</ul>
+	</div>
+	<a href="#Map/search/{{e.salle}}">{{e.salle}}</a>
+	</div>
+</pre>

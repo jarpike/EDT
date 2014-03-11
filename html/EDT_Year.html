@@ -1,0 +1,24 @@
+<script>
+EDTController.showByYear=function(events,names,template){
+	this.html('<h2>Emplois du temp complet :</h2>');
+	events.forEach(function(e){
+		e.salle=e.room.replace(/FSI ?\/ ?/g,'').replace(/"/g,"");
+		this.append(template.replace(/{{(.*?)}}/g,function(a,b){return eval(b);}))
+	},this);
+};
+</script>
+<pre class="templateContainer" name="byYear">
+	<div>
+	{{e.date.getMonth()+1}}/{{e.date.getDate()}} {{e.date.getHours()}}h{{e.date.getMinutes()}}
+	<div class="btn-group">
+		<button type="button" class="btn btn-link dropdown-toggle" data-toggle="dropdown">{{(names[e.name]||e.name||'?')}} <span class="caret"></span></button>
+		<ul class="dropdown-menu">
+			<li><a onclick="EDTController.hideUE('{{e.name}}')">Cacher</a></li>
+			<li><a onclick="EDTController.renameUE('{{e.name}}')">Renommer</a></li>
+			<li><a onclick="EDTController.addDM('{{e.name}}')">Ajouter DM</a></li>
+			<li><a onclick="EDTController.getInfo('{{encodeURI(JSON.stringify(e))}}')">Info brute</a></li>
+		</ul>
+	</div>
+	<a href="#Map/search/{{e.salle}}">{{e.salle}}</a>
+	</div>
+</pre>

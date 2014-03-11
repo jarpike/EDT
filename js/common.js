@@ -1,5 +1,5 @@
 $(function(){
-	//if($('.navbar-fixed-top').size())$('body').css('padding-top','50px');
+	if($('.navbar-fixed-top').size())$('body').css('padding-top','50px');
 	$('body>nav').fadeOut(0).html(BootstrapMenu(myMenu)).slideDown();
 	onhashchange({newURL:location.href});
 	//check if the device was sleeping

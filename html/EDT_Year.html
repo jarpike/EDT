@@ -9,7 +9,10 @@ EDTController.showByYear=function(events,names,template){
 </script>
 <pre class="templateContainer" name="byYear">
 	<div>
-	{{e.date.getMonth()+1}}/{{e.date.getDate()}} {{e.date.getHours()}}h{{e.date.getMinutes()}}
+	<code>
+		{{('0'+(e.date.getMonth()+1)).slice(-2)}}/{{('0'+e.date.getDate())   .slice(-2)}}
+		{{('0'+ e.date.getHours())   .slice(-2)}}h{{('0'+e.date.getMinutes()).slice(-2)}}
+	</code>
 	<div class="btn-group">
 		<button type="button" class="btn btn-link dropdown-toggle" data-toggle="dropdown">{{(names[e.name]||e.name||'?')}} <span class="caret"></span></button>
 		<ul class="dropdown-menu">

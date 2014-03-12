@@ -13,7 +13,7 @@ EDTController.showByWeek=function(events,names,template){
 </script>
 <pre class="templateContainer" name="byWeek">
 	<div>
-	{{e.date.getFullDay()}} {{e.date.getHours()}}h{{e.date.getMinutes()}}
+	<code>{{e.date.getFullDay()}} {{('0'+e.date.getHours()).slice(-2)}}h{{('0'+e.date.getMinutes()).slice(-2)}}</code>
 	<div class="btn-group">
 		<button type="button" class="btn btn-link dropdown-toggle" data-toggle="dropdown">{{(names[e.name]||e.name||'?')}} <span class="caret"></span></button>
 		<ul class="dropdown-menu">

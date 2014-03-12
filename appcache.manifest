@@ -1,9 +1,10 @@
 CACHE MANIFEST
 
+CACHE:
 #CDN
 http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css
-http://code.jquery.com/jquery-1.10.2.min.js
 http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js
+http://code.jquery.com/jquery-1.10.2.min.js
 http://www.pca.ups-tlse.fr/inter/images/PlanCampus.jpg
 
 #root
@@ -29,3 +30,6 @@ js/EDTController.js
 js/EDTModel.js
 js/MapController.js
 js/Menu.js
+
+NETWORK:
+*

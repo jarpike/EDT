@@ -22,9 +22,6 @@ a{cursor:pointer;}
 	position:relative;
 	overflow:scroll;
 }
-.dropdown-menu{
-	min-width: 200px;
-}
 .charico .glyphicon{
 	display: block;
 	text-align:center;

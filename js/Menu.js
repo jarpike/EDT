@@ -12,11 +12,13 @@ var myMenu={
 			'EDT :':{
 				Affichage:EDTController.createMenu,
 				Mon_Groupe:"#EDT/group",
-				RAZ_Matieres:"#EDT/clear/UE",
-				RAZ_EDT:"#EDT/clear/all",
+				Mes_Matieres:"#EDT/UE",
 			},
 			'Map zoom :':{
-				Zoom:MapController.createMenu,
+				Zoom:MapController.createZoomMenu,
+			},
+			'Map handler :':{
+				Handle:MapController.createHandlerMenu,
 			},
 			'Remise à zéro :':{
 				RAZ:Controller.createMenu,
@@ -34,7 +36,8 @@ function BootstrapMenu(menu){
 		if(entry.constructor==$)
 			return $('<li>').append(entry);
 		if(entry.constructor==String){
-			if(entry[0]=='<')return $('<li>').html(entry);//custom html tag
+			
+			if(entry[0]=='<'){console.log(entry);return TEST=$('<li>').html(entry);}//custom html tag
 			return $('<li>').append($('<a>').attr('href',entry).click(BootstrapMenu.hide).html(name.replace(/_/g,' ')));
 		}
 		if(entry.constructor==Object){

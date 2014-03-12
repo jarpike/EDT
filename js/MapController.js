@@ -1,13 +1,33 @@
 MapController={
 //DOM function
-	createMenu:function(){
-		if(localStorage.planZoom==undefined)localStorage.planZoom=1;
-		return $('<a>').append($('<div class="btn-group">').append($.map([
-			{name:'&#189;',value:2 },
-			{name:'1'     ,value:1 },
-			{name:'2'     ,value:.5},
+	createHandlerMenu:function(){
+		localStorage.planHandler=localStorage.planHandler||'plan';
+		return $('<a>').append(
+		$('<div>').addClass('btn-group btn-group-xs btn-group-justified')
+		.append($.map([
+			{name:'Plan'  ,value:'plan'},
+			{name:'Google',value:'gmap'},
 		],function(a){
-			return $('<button type="button">').html(a.name)
+			return $('<a>').html(a.name)
+			.addClass("btn btn-default "+(localStorage.planHandler==a.value?'active':''))
+			.click(function(){
+				$(this).parent().find('.active').removeClass('active');
+				$(this).addClass('active');
+				localStorage.planHandler=a.value;
+			})
+		})));
+	},
+	createZoomMenu:function(){
+		localStorage.planZoom=localStorage.planZoom||1;
+		return $('<a>').append(
+		$('<div>').addClass('btn-group btn-group-xs btn-group-justified')
+		.append($.map([
+			{name:'&#189;',value:2/1},
+			{name:'&#190;',value:4/3},
+			{name:'1'     ,value:1/1},
+			{name:'2'     ,value:1/2},
+		],function(a){
+			return $('<a>').html(a.name)
 			.addClass("btn btn-default "+(localStorage.planZoom==a.value?'active':''))
 			.click(function(){
 				$(this).parent().find('.active').removeClass('active');
@@ -37,19 +57,19 @@ MapController={
 		var zoom=localStorage.planZoom||1;
 		var p=MapController.plan,w=p.width,h=p.height;
 		var bats={
-			"MRV" :{x:2150/w,y:1688/h},
-			"1A"  :{x:2790/w,y:2060/h},
-			"2A"  :{x:2500/w,y:1950/h},
-			"3A"  :{x:3250/w,y:2060/h},
-			"4A"  :{x:3570/w,y:2162/h},
-			"1R1" :{x:2850/w,y:2255/h},
-			"1R3" :{x:2760/w,y:2255/h},
-			"1TP1":{x:2800/w,y:2133/h},
-			"3TP2":{x:3000/w,y:2133/h},
-			"U1"  :{x:3290/w,y:1940/h},
-			"U2"  :{x:3170/w,y:1777/h},
-			"U3"  :{x:3040/w,y:1777/h},
-			"U4"  :{x:2870/w,y:1777/h},
+			"MRV" :{x:2150/w,y:1688/h,ll:'43.5625686,1.4694555'},
+			"1A"  :{x:2790/w,y:2060/h,ll:'43.5625686,1.4694555'},
+			"2A"  :{x:2500/w,y:1950/h,ll:'43.5625686,1.4694555'},
+			"3A"  :{x:3250/w,y:2060/h,ll:'43.5625686,1.4694555'},
+			"4A"  :{x:3570/w,y:2162/h,ll:'43.5625686,1.4694555'},
+			"1R1" :{x:2850/w,y:2255/h,ll:'43.5625686,1.4694555'},
+			"1R3" :{x:2760/w,y:2255/h,ll:'43.5625686,1.4694555'},
+			"1TP1":{x:2800/w,y:2133/h,ll:'43.5625686,1.4694555'},
+			"3TP2":{x:3000/w,y:2133/h,ll:'43.5625686,1.4694555'},
+			"U1"  :{x:3290/w,y:1940/h,ll:'43.5625686,1.4694555'},
+			"U2"  :{x:3170/w,y:1777/h,ll:'43.5625686,1.4694555'},
+			"U3"  :{x:3040/w,y:1777/h,ll:'43.5625686,1.4694555'},
+			"U4"  :{x:2870/w,y:1777/h,ll:'43.5625686,1.4694555'},
 		};
 		var amphis={
 			ampere         :'3A',
@@ -120,12 +140,18 @@ MapController={
 			alert(salle+" : introuvable");
 			return false;
 		}
-		var div=MapController.Page.call(this,function(loaded){
-			var img=$(div).find('img')[0];
-			$(img).toggleClass('img-responsive');//switch fit<->fullsize image
-			MapController.zoomTo(found.pos.x,found.pos.y,img);
-			$('#marker').html('<b style="font-size: 3em;">&#8598;</b> <span>'+salle+'</span>')
-				.css({left:found.pos.x*img.width,top:found.pos.y*img.height-15})
-		});
+		if(localStorage.planHandler=='gmap'){
+			window.open("http://maps.google.com/?q="+found.pos.ll)
+			return false;
+		}
+		if(localStorage.planHandler=='plan'){
+			var div=MapController.Page.call(this,function(loaded){
+				var img=$(div).find('img')[0];
+				$(img).toggleClass('img-responsive');//switch fit<->fullsize image
+				MapController.zoomTo(found.pos.x,found.pos.y,img);
+				$('#marker').html('<b style="font-size: 3em;">&#8598;</b> <span>'+salle+'</span>')
+					.css({left:found.pos.x*img.width,top:found.pos.y*img.height-15})
+			});
+		}
 	}
 }

@@ -57,19 +57,19 @@ MapController={
 		var zoom=localStorage.planZoom||1;
 		var p=MapController.plan,w=p.width,h=p.height;
 		var bats={
-			"MRV" :{x:2150/w,y:1688/h,ll:'43.5625686,1.4694555'},
-			"1A"  :{x:2790/w,y:2060/h,ll:'43.5625686,1.4694555'},
-			"2A"  :{x:2500/w,y:1950/h,ll:'43.5625686,1.4694555'},
-			"3A"  :{x:3250/w,y:2060/h,ll:'43.5625686,1.4694555'},
-			"4A"  :{x:3570/w,y:2162/h,ll:'43.5625686,1.4694555'},
-			"1R1" :{x:2850/w,y:2255/h,ll:'43.5625686,1.4694555'},
-			"1R3" :{x:2760/w,y:2255/h,ll:'43.5625686,1.4694555'},
-			"1TP1":{x:2800/w,y:2133/h,ll:'43.5625686,1.4694555'},
-			"3TP2":{x:3000/w,y:2133/h,ll:'43.5625686,1.4694555'},
-			"U1"  :{x:3290/w,y:1940/h,ll:'43.5625686,1.4694555'},
-			"U2"  :{x:3170/w,y:1777/h,ll:'43.5625686,1.4694555'},
-			"U3"  :{x:3040/w,y:1777/h,ll:'43.5625686,1.4694555'},
-			"U4"  :{x:2870/w,y:1777/h,ll:'43.5625686,1.4694555'},
+			"MRV" :{x:2150/w,y:1688/h,ll:'43.566269,1.467403'},
+			"1A"  :{x:2790/w,y:2060/h,ll:'43.562206,1.467244'},
+			"2A"  :{x:2500/w,y:1950/h,ll:'43.563863,1.466572'},
+			"3A"  :{x:3250/w,y:2060/h,ll:'43.560239,1.469195'},
+			"4A"  :{x:3570/w,y:2162/h,ll:'43.558254,1.469854'},
+			"1R1" :{x:2850/w,y:2255/h,ll:'43.561300,1.466276'},
+			"1R3" :{x:2760/w,y:2255/h,ll:'43.561689,1.465826'},
+			"1TP1":{x:2800/w,y:2133/h,ll:'43.561899,1.466856'},
+			"3TP2":{x:3000/w,y:2133/h,ll:'43.561013,1.467789'},
+			"U1"  :{x:3290/w,y:1940/h,ll:'43.560375,1.470225'},
+			"U2"  :{x:3170/w,y:1777/h,ll:'43.561192,1.470407'},
+			"U3"  :{x:3040/w,y:1777/h,ll:'43.561934,1.470010'},
+			"U4"  :{x:2870/w,y:1777/h,ll:'43.562638,1.469484'},
 		};
 		var amphis={
 			ampere         :'3A',
@@ -129,8 +129,8 @@ MapController={
 		return div;
 	},
 	zoomPage:function(salle){
-		var num=prompt("Saisir un recul pour le plan (défaut : 1, recommandé : 2)",localStorage.planZoom||2);
-		if(isNaN(num))alert(num+" n'est pas un numéro valide");
+		var num=prompt("Saisir un recul pour le plan (dï¿½faut : 1, recommandï¿½ : 2)",localStorage.planZoom||2);
+		if(isNaN(num))alert(num+" n'est pas un numï¿½ro valide");
 		else localStorage.planZoom=num;
 		return false;
 	},

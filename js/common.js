@@ -1,11 +1,11 @@
 $(function(){
-	if($('.navbar-fixed-top').size())$('body').css('padding-top','50px');
+	if($('.navbar-fixed-top').size())$('body').css('padding-top','51px');
 	$('body>nav').fadeOut(0).html(BootstrapMenu(myMenu)).slideDown();
 	onhashchange({newURL:location.href});
 	//check if the device was sleeping
 	lastSync = new Date();
 	setInterval(function(){
-		if((new Date()-lastSync)>2*1000)onawake();
+		if((new Date()-lastSync)>2*10000)onawake();//unused since more than 20s
 		lastSync = new Date();
 	},1000);
 });
@@ -13,6 +13,7 @@ $(function(){
 onawake=function(event){
 	onhashchange({newURL:location.href});
 }
+
 onhashchange=function(event){
 	function getHash(url){return (url.match(/#.*/)||['#'])[0];}
 	//don't change url on internal job
@@ -50,11 +51,34 @@ $.ajaxPrefilter(function(opt,_opt,jqXHR){
 	}
 });
 
-Date.prototype.getFullDay = function () {
-	return ['dim','lun','mar','mer','jeu','ven','sam'][this.getDay()];
+function hydrate(str,my){
+	return str.replace(/{{(.*?)}}/g,function(a,b){return eval(b);})
+}
+Date.fromInput=function(str){
+	var d=str.match(/(\d+)\/(\d+)\/(\d+)/);// dd/mm/yyyy
+	if(d!=null)return new Date(d[3],d[2]-1,1+1*d[1]);
+	var i=str.match(/(\d+)-(\d+)-(\d+)/);// yyyy-mm-dd
+	if(i!=null)return new Date(i[1],i[2]-1,1+1*i[3]);
+	console.warn("unknow date format :",str);
+}
+Date.prototype.getFullTime = function () {
+	return ("0"+ this.getHours())   .slice(-2)+'h'+("0"+this.getMinutes()).slice(-2);
+}
+Date.prototype.getFullDate = function () {
+	return ("0"+(this.getUTCMonth()+1)).slice(-2)+'/'+("0"+this.getUTCDate()).slice(-2);
+}
+Date.prototype.toInputDate = function () {
+	return ("0"+this.getUTCDate()).slice(-2)+'/'+("0"+(this.getUTCMonth()+1)).slice(-2)+'/'+this.getFullYear();
+}
+Date.prototype.getFullDay = function (size) {
+	return ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'][this.getDay()].slice(0,size);
+}
+Date.prototype.getFullMonth = function (size) {
+	return ['Janvier','Fevrier','Mars','Avril','Mai','Juin','Juillet','Aout','Septembre','Octobre','Novembre','Decembre'][this.getMonth()].slice(0,size);
 }
 Date.prototype.getWeek = function () {
-	var tmp = new Date(this.valueOf());
-	tmp.setDate(tmp.getDate() - ((this.getDay()+6)%7)+3);
-	return Math.ceil(((tmp - new Date(tmp.getFullYear(),0,4))/864e5)/7);
+ var date = new Date(this.getTime()); date.setHours(0, 0, 0, 0);
+ date.setDate(date.getDate() + 3 - (date.getDay() + 6) % 7);
+ var week1 = new Date(date.getFullYear(), 0, 4);
+ return 1 + Math.round(((date.getTime() - week1.getTime()) / 86400000 - 3 + (week1.getDay() + 6) % 7) / 7);
 }

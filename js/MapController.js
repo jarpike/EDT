@@ -5,7 +5,7 @@ MapController={
 		return $('<a>').append(
 		$('<div>').addClass('btn-group btn-group-xs btn-group-justified')
 		.append($.map([
-			{name:'Plan'  ,value:'plan'},
+			{name:'myPlan',value:'plan'},
 			{name:'Google',value:'gmap'},
 		],function(a){
 			return $('<a>').html(a.name)
@@ -105,7 +105,7 @@ MapController={
 			if(name.match(bat))
 				return {name:bat,pos:bats[bat]};
 	},
-	resize:function(e){$("#imcont").css({maxHeight:innerHeight-50+'px'})},
+	resize:function(e){$("#imcont").css({maxHeight:innerHeight-51+'px'})},
 //Pages
 	Page:function(cb){
 		$('#page').parent().removeClass().addClass('container-fluid')
@@ -129,8 +129,8 @@ MapController={
 		return div;
 	},
 	zoomPage:function(salle){
-		var num=prompt("Saisir un recul pour le plan (dï¿½faut : 1, recommandï¿½ : 2)",localStorage.planZoom||2);
-		if(isNaN(num))alert(num+" n'est pas un numï¿½ro valide");
+		var num=prompt("Saisir un recul pour le plan (défaut : 1, recommandé : 2)",localStorage.planZoom||2);
+		if(isNaN(num))alert(num+" n'est pas un numéro valide");
 		else localStorage.planZoom=num;
 		return false;
 	},
@@ -141,7 +141,7 @@ MapController={
 			return false;
 		}
 		if(localStorage.planHandler=='gmap'){
-			window.open("http://maps.google.com/?q="+found.pos.ll)
+			window.open('http://maps.google.com/?q='+found.pos.ll+'&ll='+found.pos.ll,'_blank');
 			return false;
 		}
 		if(localStorage.planHandler=='plan'){

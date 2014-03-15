@@ -35,7 +35,7 @@ Controller={
 //Pages
 	Page:function(type){
 		if(localStorage.edtGroup)
-			return location.hash="EDT/show";
-		this.load('html/home.html');
+			return location.hash="EDT/show";//TODO call directly the function 
+		this.load('home.html');
 	},
 }

@@ -3,22 +3,24 @@ var myMenu={
 		myAgenda:"#",
 	},
 	left :{
-		EDT:"#EDT/show",
+//		EDT:"#EDT/show",
+		'EDT':{
+			Mon_Groupe  :"#EDT/group",
+			Mes_Matieres:"#EDT/UE",
+		},
 		DM:"#DM",
 		Map:"#Map",
 	},
 	right:{
 		'-cog':{
-			'EDT :':{
+			'Afficher par :':{
 				Affichage:EDTController.createMenu,
-				Mon_Groupe:"#EDT/group",
-				Mes_Matieres:"#EDT/UE",
 			},
-			'Map zoom :':{
-				Zoom:MapController.createZoomMenu,
-			},
-			'Map handler :':{
+			'Appli map :':{
 				Handle:MapController.createHandlerMenu,
+			},
+			'myPlan zoom :':{
+				Zoom:MapController.createZoomMenu,
 			},
 			'Remise à zéro :':{
 				RAZ:Controller.createMenu,
@@ -42,7 +44,7 @@ function BootstrapMenu(menu){
 		}
 		if(entry.constructor==Object){
 			if(rec>0)return [
-				$('<li class="divider">'),//divider
+				//$('<li class="divider">'),//divider
 				$('<li class="dropdown-header">').html(name),//section name
 				].concat(entries2bootstrap(entry,1+rec));//sub-entries
 			return $('<li>').addClass('dropdown')

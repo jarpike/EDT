@@ -1,15 +1,14 @@
 //EDT pages : /EDT/*
 EDTController={
-//DOM event
+//GUI utilities
 	createMenu:function(){
-		localStorage.edtView=localStorage.edtView||'Week';
+		localStorage.edtView=localStorage.edtView||'Day';
 		return $('<a>')
 		.append($('<div>').addClass('btn-group btn-group-xs btn-group-justified')
 			.append($.map([
-					{name:'J',title:'Jour',value:'Day'},
-					{name:'S',title:'Semaine',value:'Week'},
-					{name:'M',title:'Mois',value:'Month'},
-					{name:'A',title:'Tout',value:'Year'}
+					{name:'Jour',title:'Jour',value:'Day'},
+					{name:'Sem',title:'Semaine',value:'Week'},
+					{name:'Tout',title:'Tout',value:'Year'}
 				],
 				function(a){
 					return $('<a>').html(a.name).attr({title:a.title})
@@ -27,19 +26,82 @@ EDTController={
 			))
 		);
 	},
-	hideUE:function(name){
+	btnUE:function(event){
+		return '\
+			<div class="btn-group">\
+				<button type="button" class="btn btn-link dropdown-toggle" data-toggle="dropdown">'+
+					(event.alias||event.name)+'&nbsp;<span class="caret"></span>\
+				</button>\
+				<ul class="dropdown-menu">\
+					<li><a onclick="EDTController.hideUE  (this)">Cacher</a></li>\
+					<li><a onclick="EDTController.renameUE(this)">Renommer</a></li>\
+					<li><a onclick="EDTController.addDM   (this)">Ajouter DM</a></li>\
+					<li><a onclick="EDTController.getInfo (this)">Info brute</a></li>\
+				</ul>\
+			</div>'
+	},
+	createHeader:function(events,names,now,delta,cb){
+		$header=$('<div class="input-group">\
+				<span class="input-group-btn" data-delta="-'+delta+'"><a class="btn btn-default"><i class="glyphicon glyphicon-chevron-left"></i></a></span>\
+				<input class="form-control text-center" type="date" value="'+now.toISOString().substr(0,10)+'" id="datepicker"/>\
+				<a class="input-group-addon" id="datepicker_btn"    ><i class="glyphicon glyphicon-calendar"></i></a>\
+				<span class="input-group-btn" data-delta= "'+delta+'"><a class="btn btn-default"><i class="glyphicon glyphicon-chevron-right"></i></a></span>\
+		</div>');
+		$header.find('[data-delta]').click(function(){
+			var $picker=$('#datepicker');
+			if(!$picker.val())return;
+			var old_date=new Date.fromInput($picker.val());
+			var delta=$(this).data('delta');
+			var new_date=new Date(old_date*1 + delta*24*60*60*1000);
+			cb.call($page,events,names,new_date);
+		});
+		$header.find('input').change(function(){
+			return cb.call($page,events,names,new Date.fromInput(this.value));
+		});
+		$header.find('#datepicker_btn').datepicker({
+			orientation: "auto right",
+			format: "dd/mm/yyyy",
+			language: "fr",
+			forceParse: false,
+			daysOfWeekDisabled: "0",
+			autoclose: true,
+			todayHighlight: true
+		}).datepicker('setUTCDate',now).on('changeDate',function(ev){
+			var new_date=$(this).datepicker('getUTCDate');
+			cb.call($page,events,names,new_date);
+		});
+		return $header;
+	},
+//DOM event
+	hideUE:function(a){
+		var name=JSON.parse(decodeURI($(a).closest('[data-json]').data('json'))).name;
 		var hide=JSON.parse(localStorage.edtUEhide||'[]');
 		hide.push(name);
 		localStorage.edtUEhide=JSON.stringify(hide);
 		onhashchange({newURL:location.href});
 	},
-	renameUE:function(name){
+	renameUE:function(a){
 		var names=JSON.parse(localStorage.edtUEname||'{}');
-		var val = prompt("Entrez un nouveau nom pour "+name,names[name]||'');
+		var json=JSON.parse(decodeURI($(a).closest('[data-json]').data('json')));
+		var val = prompt("Entrez un nouveau nom pour "+json.name,names[json.name]||'');
 		if(!val)return;
-		names[name]=val;
+		names[json.name]=val;
 		localStorage.edtUEname=JSON.stringify(names);
 		onhashchange({newURL:location.href});
+	},
+	addDM:function(a){
+		var e=JSON.parse(decodeURI($(a).closest('[data-json]').data('json')));
+		var myDM={
+			title:prompt('Saisir un titre'),
+			UE   :e.name,
+			date :(new Date(e.date)),
+			desc :'',//prompt('Saisir une description'),
+			lv   :'3',//confirm('Marquer ce devoir comme important ?')?3:1,
+			done :false
+		};
+		var dms=JSON.parse(localStorage.DM||'[]');
+		dms.push(myDM);
+		localStorage.DM=JSON.stringify(dms);
 	},
 	update:function(){
 		var crc=0;
@@ -51,24 +113,11 @@ EDTController={
 		localStorage.edtGroup=d.id;
 		location.hash="EDT/show";
 	},
-	getInfo:function(json){
-		json=JSON.parse(decodeURI(json));
+	getInfo:function(a){
+		var json=JSON.parse(decodeURI($(a).closest('[data-json]').data('json')));
 		var msg="";
 		for(var a in json)msg+=a+":"+json[a]+'\n';
 		alert(msg);
-	},
-	addDM:function(name){
-		var myDM={
-			title:prompt('Saisir un titre'),
-			UE   :name,
-			date :1*(new Date()),
-			desc :prompt('Saisir une description'),
-			lv   :confirm('Marquer ce devoir comme important ?')?3:1,
-			done :false
-		};
-		var dms=JSON.parse(localStorage.DM||'[]');
-		dms.push(myDM);
-		localStorage.DM=JSON.stringify(dms);
 	},
 	hideUE2:function(btn,name){
 		var $ico=$(btn).find('.glyphicon');
@@ -95,9 +144,12 @@ EDTController={
 				Récuperation des données ...\
 			</div>\
 		</div>',
+	noGroupMsg:'\
+		<h1>Oups ! Aucun group choisi !</h1>\
+		<h1><small>Pourquoi ne pas aller en <a href="#EDT/group">choisir</a> un ?</small></h1>',
 	showPage:function(){
 		if(!localStorage.edtGroup)
-			return this.html('<h1>Oups ! Aucun group choisi !</h1><h1><small>Pourquoi ne pas aller en <a href="#EDT/group">choisir</a> un ?</small></h1>');
+			return this.html(EDTController.noGroupMsg);
 		$page=this.html(EDTController.recupMsg);
 		$.ajax(EDT.ajax_url+localStorage.edtGroup,{
 			success:function(xml){
@@ -106,17 +158,9 @@ EDTController={
 				var timetable=(new DOMParser()).parseFromString(xml,"text/xml").documentElement;
 				var evts=EDT.parse(timetable).events.filter(function(e){return hides.indexOf(e.name)==-1;});
 				var methName='showBy'+localStorage.edtView;
-				$.ajax('./html/EDT_'+localStorage.edtView+'.html',{success:function(html){
-					var pre="";
-					$(html).each(function(){
-						if(this.tagName=='SCRIPT')eval.call($page,this.innerHTML);
-						if(this.tagName=='PRE')pre=(this.innerHTML);
-					});
-					if(EDTController[methName])
-						EDTController[methName].call($page,evts,names,pre);
-					else
-						$page.html('Method "'+methName+'" not found');
-				}});
+				//$('head').append($('<script>').attr({src:'view/'+localStorage.edtView+'.js'}));
+				if(!EDTController[methName])return $page.html('Method "'+methName+'" not found');
+				EDTController[methName].call($page,evts,names);
 			},
 			error:function(xhr,msg){
 				$page.html("erreur lors de la récupération de l'emploi du temps : "+msg);

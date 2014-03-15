@@ -7,20 +7,15 @@ http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js
 http://code.jquery.com/jquery-1.10.2.min.js
 http://www.pca.ups-tlse.fr/inter/images/PlanCampus.jpg
 
-#root
+#IMG
 apple-touch-icon.png
 favicon.png
-common.js
 
 #CSS
-css/style.css
+style.css
 
 #HTML
-html/home.html
-html/EDT_Year.html
-html/EDT_Day.html
-html/EDT_Month.html
-html/EDT_Week.html
+home.html
 
 #JS
 js/common.js
@@ -30,6 +25,7 @@ js/EDTController.js
 js/EDTModel.js
 js/MapController.js
 js/Menu.js
+js/EDTController.showBy.js
 
 NETWORK:
 *

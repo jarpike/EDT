@@ -4,8 +4,10 @@ $(function(){
 	onhashchange({newURL:location.href});
 	//check if the device was sleeping
 	lastSync = new Date();
+	$('#customCSS').html(localStorage.customCSS||'');
+	$('#customJS' ).html(localStorage.customJS ||'');
 	setInterval(function(){
-		if((new Date()-lastSync)>2*10000)onawake();//unused since more than 20s
+		if((new Date()-lastSync)>60*1000)onawake();//unused since more than 1min
 		lastSync = new Date();
 	},1000);
 });

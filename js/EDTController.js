@@ -154,11 +154,18 @@ EDTController={
 		var url='#EDT/import/'+encodeURI(JSON.stringify(json));
 		var href=location.href.replace(location.hash,'')+url
 		this.html('<h2>Exporter mon emploi du temps</h2>\
-			<p>Partagez ce lien :</p>\
+			<p>Partagez ce lien <i class="text-muted">(btn droit > copier le lien)</i>:</p>\
 			<p><a href="'+url+'">'+JSON.stringify(json)+'</a></p>\
 			<p>Ou envoyer le directement par :</p>\
-			<a class="btn btn-primary" href="mailto:?body='+encodeURI(href)+'&subject=Mon emploi du temps">Mail</a>\
-			<a class="btn btn-primary" href="sms:?body='+encodeURI(href.replace('#','%23'))+'">SMS</a>');
+			<a class="btn btn-primary" href="mailto:?body='+encodeURI(href)+'&subject=Mon emploi du temps"><i class="glyphicon glyphicon-envelope"></i> Mail</a>\
+			<a class="btn btn-primary" href="sms:?body='+encodeURI(href.replace('#','%23'))+'"><i class="glyphicon glyphicon-comment"></i> SMS</a>\
+			<p><div class="alert alert-info"><b>Info :</b> \
+				Le lien hypertext peut ne pas etre reconnue dans son intégralitée \
+				(a cause des certain characters speciaux). \
+				Copier coller tout simplement le contenu du Mail/SMS \
+				dans la barre URL de votre navigateur pour palier ce probleme.\
+			</div></p>\
+			');
 	},
 	importPage:function(json){
 		if(!json)return this.html('aucun message');

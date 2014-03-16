@@ -24,10 +24,7 @@ var myMenu={
 			'Appli map :':{
 				Handle:MapController.createHandlerMenu,
 			},
-			'myPlan zoom :':{
-				Zoom:MapController.createZoomMenu,
-			},
-			'Remise à zéro :':{
+			'Avancé :':{
 				RAZ:Controller.createMenu,
 			},
 		}

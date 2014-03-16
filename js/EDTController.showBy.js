@@ -13,6 +13,7 @@ EDTController.showBy=function(events,names,base_date,cb,opt){
 	if(base_date)now=base_date;
 	var events_now=opt.filter?events.filter(opt.filter,now):events;
 	this.html(opt.noHeader?'':EDTController.createHeader(events,names,now,opt.shift||0,cb));
+	if(EDTController.showBy.onshow)EDTController.showBy.onshow(events_now);
 	if(!events_now.length)
 		return this.append('<h2 class="text-center">Aucun cours :)</h2>');
 	var day='',month="";

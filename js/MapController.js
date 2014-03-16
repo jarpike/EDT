@@ -18,7 +18,7 @@ MapController={
 		})));
 	},
 	createZoomMenu:function(){
-		localStorage.planZoom=localStorage.planZoom||1;
+		localStorage.planZoom=localStorage.planZoom||2;
 		return $('<a>').append(
 		$('<div>').addClass('btn-group btn-group-xs btn-group-justified')
 		.append($.map([
@@ -42,7 +42,7 @@ MapController={
 	},
 	zoomTo:function(x,y,img){
 		var div = img.parentElement;
-		var zoom= localStorage.planZoom||1;
+		var zoom= localStorage.planZoom||2;
 		if(!$(img).hasClass('img-responsive')){//fullsize
 			div.scrollTop  = (y*img.naturalHeight/zoom - div.clientHeight/2);
 			div.scrollLeft = (x*img.naturalWidth /zoom - div.clientWidth /2);
@@ -54,7 +54,7 @@ MapController={
 	},
 	plan:{src:"http://www.pca.ups-tlse.fr/inter/images/PlanCampus.jpg",width:4900,height:3578,alt:"Loading ... or just crashed :p"},
 	find:function(name){
-		var zoom=localStorage.planZoom||1;
+		var zoom=localStorage.planZoom||2;
 		var p=MapController.plan,w=p.width,h=p.height;
 		var bats={
 			"MRV" :{x:2150/w,y:1688/h,ll:'43.566269,1.467403'},
@@ -109,7 +109,7 @@ MapController={
 //Pages
 	Page:function(cb){
 		$('#page').parent().removeClass().addClass('container-fluid')
-		var zoom=localStorage.planZoom||1;
+		var zoom=localStorage.planZoom||2;
 		var p=MapController.plan;
 		var div=this.html($('<div id="imcont">').append(
 			$('<img class="img-responsive">').attr(p)
@@ -127,12 +127,6 @@ MapController={
 		).append('<span id="marker"></span>'));
 		(onresize=MapController.resize)();
 		return div;
-	},
-	zoomPage:function(salle){
-		var num=prompt("Saisir un recul pour le plan (défaut : 1, recommandé : 2)",localStorage.planZoom||2);
-		if(isNaN(num))alert(num+" n'est pas un numéro valide");
-		else localStorage.planZoom=num;
-		return false;
 	},
 	searchPage:function(salle){
 		var found,salle=decodeURI(salle);

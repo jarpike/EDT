@@ -147,6 +147,48 @@ EDTController={
 	noGroupMsg:'\
 		<h1>Oups ! Aucun group choisi !</h1>\
 		<h1><small>Pourquoi ne pas aller en <a href="#EDT/group">choisir</a> un ?</small></h1>',
+	exportPage:function(){
+		var json={};
+		for(attr in localStorage)if(attr.match(/^edt/))
+			json[attr]=localStorage[attr];
+		var url='#EDT/import/'+encodeURI(JSON.stringify(json));
+		var href=location.href.replace(location.hash,'')+url
+		this.html('<h2>Exporter mon emploi du temps</h2>\
+			<p>Partagez ce lien :</p>\
+			<p><a href="'+url+'">'+JSON.stringify(json)+'</a></p>\
+			<p>Ou envoyer le directement par :</p>\
+			<a class="btn btn-primary" href="mailto:?body='+encodeURI(href)+'&subject=Mon emploi du temps">Mail</a>\
+			<a class="btn btn-primary" href="sms:?body='+encodeURI(href.replace('#','%23'))+'">SMS</a>');
+	},
+	importPage:function(json){
+		if(!json)return this.html('aucun message');
+		console.log(decodeURI(json))
+		json=JSON.parse(decodeURI(json));
+		if(confirm('Sauvegarder votre profil actuel ?\nAinsi, vous pourrez le restaurer ulterieurement.'))
+			for(attr in localStorage)if(attr.match(/^edt/)){//move every edt to _edt
+				localStorage['_'+attr]=localStorage[attr];
+				localStorage.removeItem(attr);
+			}
+		//remove every edt entry
+		for(attr in localStorage)if(attr.match(/^edt/))
+			localStorage.removeItem(attr);
+		//import json
+		for(attr in json)
+			localStorage[attr]=json[attr];
+		this.html(Object.keys(json).length+' imports effectués avec succes !');
+	},
+	restorePage:function(){
+		//remove current pref
+		for(attr in localStorage)if(attr.match(/^edt/))
+			localStorage.removeItem(attr);
+		//update back to old ones
+		for(attr in localStorage)if(attr.match(/^_edt/)){
+			localStorage[attr.substr(1)]=localStorage[attr];
+			localStorage.removeItem(attr);
+		}
+		alert('Restauration effectuée avec succes !');
+		return false;
+	},
 	showPage:function(){
 		if(!localStorage.edtGroup)
 			return this.html(EDTController.noGroupMsg);
@@ -157,7 +199,7 @@ EDTController={
 				var names=JSON.parse(localStorage.edtUEname||'{}');
 				var timetable=(new DOMParser()).parseFromString(xml,"text/xml").documentElement;
 				var evts=EDT.parse(timetable).events.filter(function(e){return hides.indexOf(e.name)==-1;});
-				var methName='showBy'+localStorage.edtView;
+				var methName='showBy'+(localStorage.edtView||'Day');
 				//$('head').append($('<script>').attr({src:'view/'+localStorage.edtView+'.js'}));
 				if(!EDTController[methName])return $page.html('Method "'+methName+'" not found');
 				EDTController[methName].call($page,evts,names);

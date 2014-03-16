@@ -7,9 +7,14 @@ var myMenu={
 		'EDT':{
 			Mon_Groupe  :"#EDT/group",
 			Mes_Matieres:"#EDT/UE",
+			'Partage':{
+				Exporter:"#EDT/export",
+				Restaurer:"#EDT/restore",
+			}
 		},
 		DM:"#DM",
 		Map:"#Map",
+		News:"#News",
 	},
 	right:{
 		'-cog':{

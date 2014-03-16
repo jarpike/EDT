@@ -6,8 +6,8 @@ Controller={
 		return $('<a>').append(
 			$('<div>').addClass('btn-group btn-group-xs btn-group-justified')
 			.append($.map([
-					{title:"Cache",ico:'dashboard',click:Controller.clearCache},
-					{title:"EDT"  ,ico:'calendar' ,click:Controller.clearEDT},
+//					{title:"Cache",ico:'dashboard',click:Controller.clearCache},
+//					{title:"EDT"  ,ico:'calendar' ,click:Controller.clearEDT},
 					{title:"Tout" ,ico:'asterisk' ,click:Controller.clearAll},
 				],function(a){
 					return $('<a>').addClass('btn btn-default').attr({title:a.title})
@@ -21,6 +21,7 @@ Controller={
 		var len=localStorage.length;
 		localStorage.clear();
 		alert(len+" entrées ont été éffacées");
+		location.reload();
 	},
 	clearEDT:function(){
 		if(!confirm("Effacer vos préférences de l'emploi du temps ?"))return;

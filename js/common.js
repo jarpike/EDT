@@ -1,14 +1,20 @@
 $(function(){
-	if($('.navbar-fixed-top').size())$('body').css('padding-top','51px');
-	$('body>nav').fadeOut(0).html(BootstrapMenu(myMenu)).slideDown();
+	//setup url handler
 	onhashchange({newURL:location.href});
-	//check if the device was sleeping
-	lastSync = new Date();
+	//load custom pref
 	$('#customCSS').html(localStorage.customCSS||'');
 	$('#customJS' ).html(localStorage.customJS ||'');
+	//add top menu
+	$('body').css('padding-top',($('.navbar-fixed-top').height()||0)+'px');
+	$('body>nav').fadeOut(0).html(BootstrapMenu(myMenu)).fadeIn(1000);
+	//setup watchdog
+	lastSync = new Date();
 	setInterval(function(){
-		if((new Date()-lastSync)>60*1000)onawake();//unused since more than 1min
+		if((new Date()-lastSync)>60*1000)
+			onawake((new Date()-lastSync));//unused since more than 1min
 		lastSync = new Date();
+		//ugly
+		$('body').css('padding-top',($('.navbar-fixed-top').height()||0)+'px');
 	},1000);
 });
 

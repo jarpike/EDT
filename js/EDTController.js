@@ -29,9 +29,9 @@ EDTController={
 	btnUE:function(event){
 		return '\
 			<div class="btn-group">\
-				<button type="button" class="btn btn-link dropdown-toggle" data-toggle="dropdown">'+
+				<a class="btn btn-link dropdown-toggle" data-toggle="dropdown">'+
 					(event.alias||event.name)+'&nbsp;<span class="caret"></span>\
-				</button>\
+				</a>\
 				<ul class="dropdown-menu">\
 					<li><a onclick="EDTController.hideUE  (this)">Cacher</a></li>\
 					<li><a onclick="EDTController.renameUE(this)">Renommer</a></li>\
@@ -41,12 +41,12 @@ EDTController={
 			</div>'
 	},
 	createHeader:function(events,names,now,delta,cb){
-		$header=$('<div class="input-group">\
+		$header=$('<p><div class="input-group">\
 				<span class="input-group-btn" data-delta="-'+delta+'"><a class="btn btn-default"><i class="glyphicon glyphicon-chevron-left"></i></a></span>\
 				<input class="form-control text-center" type="date" value="'+now.toISOString().substr(0,10)+'" id="datepicker"/>\
 				<a class="input-group-addon" id="datepicker_btn"    ><i class="glyphicon glyphicon-calendar"></i></a>\
 				<span class="input-group-btn" data-delta= "'+delta+'"><a class="btn btn-default"><i class="glyphicon glyphicon-chevron-right"></i></a></span>\
-		</div>');
+		</div></p>');
 		$header.find('[data-delta]').click(function(){
 			var $picker=$('#datepicker');
 			if(!$picker.val())return;

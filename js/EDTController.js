@@ -139,11 +139,12 @@ EDTController={
 	},
 //Pages
 	recupMsg:'\
-		<div class="progress progress-striped active">\
+		<p><div class="progress progress-striped active">\
 			<div class="progress-bar" style="width: 100%">\
-				Récuperation des données ...\
+				Récuperation des données ...<a href="#" style="color: inherit;"><u>Recharger</u></a> si bloqué.\
 			</div>\
-		</div>',
+		</div></p>\
+		',
 	noGroupMsg:'\
 		<h1>Oups ! Aucun group choisi !</h1>\
 		<h1><small>Pourquoi ne pas aller en <a href="#EDT/group">choisir</a> un ?</small></h1>',
@@ -169,7 +170,6 @@ EDTController={
 	},
 	importPage:function(json){
 		if(!json)return this.html('aucun message');
-		console.log(decodeURI(json))
 		json=JSON.parse(decodeURI(json));
 		if(confirm('Sauvegarder votre profil actuel ?\nAinsi, vous pourrez le restaurer ulterieurement.'))
 			for(attr in localStorage)if(attr.match(/^edt/)){//move every edt to _edt

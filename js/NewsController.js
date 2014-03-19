@@ -1,13 +1,19 @@
 NewsController={
+	url:'http://univ-tlse.appspot.com/news/m1info',
+	reload:function(){
+		localStorage.removeItem(NewsController.url);
+		NewsController.Page.call($('#page'));
+	},
 	template:'<div class="panel panel-default">\
 			<div class="panel-heading"><a href="{{my.item.link}}">{{my.item.head}}</a><span class="badge pull-right">{{my.item.date.toInputDate()}}</span></div>\
 			<div class="panel-body">{{my.item.body}}</div>\
 		</div>',
 	Page:function(type){
-		$page=this;
-		$.get('http://univ-tlse.appspot.com/news/m1info',function(xml){
+		$page=this.html(EDTController.recupMsg);
+		$.get(NewsController.url,function(xml){
 			var rss=(new DOMParser()).parseFromString(xml,"text/xml").documentElement;
-			$page.html('<h1>'+$(rss).find('channel>title').text()+'</h1>');
+			var title=$(rss).find('channel>title').text();
+			$page.html('<h1>'+title+' <a onclick="NewsController.reload()" class="btn btn-default glyphicon glyphicon-refresh"></a></h1>');
 			var news=$(rss).find('item').map(function(){
 				return {
 					head:$(this).find('title').text().match(/(.*) - /)[1],

@@ -17,6 +17,7 @@ Controller={
 	},
 	clear:function(){
 		if(!confirm("Effacer toutes vos préférences ? (Cette action est irreversible)"))return;
+		applicationCache.update();
 		var len=localStorage.length;
 		localStorage.clear();
 		alert(len+" préférences ont été éffacées");

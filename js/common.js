@@ -10,15 +10,19 @@ $(function(){
 	//setup watchdog
 	lastSync = new Date();
 	setInterval(function(){
-		if((new Date()-lastSync)>60*1000)
-			onawake((new Date()-lastSync));//unused since more than 1min
-		lastSync = new Date();
-		//ugly
-		$('body').css('padding-top',($('.navbar-fixed-top').height()||0)+'px');
+		var now=new Date();
+		if((now-lastSync)>60*1000)//unused since more than 1min
+			onawake(lastSync,now);//refresh
+		lastSync = now;
 	},1000);
 });
 
-onawake=function(event){
+onawake=function(old,now){
+	if(now.getDate()!=old.getDate()){
+		for(var e in localStorage)
+			if(e.match(EDT.ajax_url))
+				localStorage.removeItem(e);
+	}
 	onhashchange({newURL:location.href});
 }
 

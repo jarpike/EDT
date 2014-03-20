@@ -52,7 +52,7 @@ onhashchange=function(event){
 $.ajaxPrefilter(function(opt,_opt,jqXHR){
 	var value=localStorage.getItem(opt.url);
 	if(value){
-		if(opt.success){opt.success(value);jqXHR.abort()};
+		if(opt.success){opt.success(value,true);jqXHR.abort()};
 		//else : jquery internal handler (.load ...)
 	}else{
 		if(opt.success)opt._success=opt.success;//hook the callback

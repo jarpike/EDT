@@ -103,10 +103,12 @@ EDTController={
 		dms.push(myDM);
 		localStorage.DM=JSON.stringify(dms);
 	},
-	update:function(){
-		var crc=0;
-		localStorage[EDT.ajax_url+localStorage.edtGroup].split('').forEach(
-			function(c,i){crc+=c.charCodeAt(0)*i});
+	refresh:function(){
+		if(navigator.onLine==false)
+			if(!confirm("vous ne semblez pas connecté a internet.\nVous ne pourrez donc pas re-afficher l'emploi du temps\nContinuer ?"))return;
+		for(var a in localStorage)
+			if(a.match(EDT.ajax_url))localStorage.removeItem(a);
+		onhashchange({newURL:location.href});
 	},
 	register:function(btn){
 		var d=btn.dataset;
@@ -201,13 +203,14 @@ EDTController={
 			return this.html(EDTController.noGroupMsg);
 		$page=this.html(EDTController.recupMsg);
 		$.ajax(EDT.ajax_url+localStorage.edtGroup,{
-			success:function(xml){
+			success:function(xml,fromcache){
+				if(!fromcache)
+					localStorage.edtDate=(new Date()).getFullDate();
 				var hides=JSON.parse(localStorage.edtUEhide||'[]');
 				var names=JSON.parse(localStorage.edtUEname||'{}');
 				var timetable=(new DOMParser()).parseFromString(xml,"text/xml").documentElement;
 				var evts=EDT.parse(timetable).events.filter(function(e){return hides.indexOf(e.name)==-1;});
 				var methName='showBy'+(localStorage.edtView||'Day');
-				//$('head').append($('<script>').attr({src:'view/'+localStorage.edtView+'.js'}));
 				if(!EDTController[methName])return $page.html('Method "'+methName+'" not found');
 				EDTController[methName].call($page,evts,names);
 			},

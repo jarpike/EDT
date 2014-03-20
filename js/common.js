@@ -55,10 +55,11 @@ $.ajaxPrefilter(function(opt,_opt,jqXHR){
 		if(opt.success){opt.success(value,true);jqXHR.abort()};
 		//else : jquery internal handler (.load ...)
 	}else{
+		console.log(value+' not found, downloading...')
 		if(opt.success)opt._success=opt.success;//hook the callback
 		opt.success=function(data){
 			localStorage.setItem(opt.url,jqXHR.responseText);
-			if(opt._success)opt._success(jqXHR.responseText);
+			if(opt._success)opt._success(jqXHR.responseText,false);
 		};
 	}
 });

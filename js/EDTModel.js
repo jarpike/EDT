@@ -1,4 +1,4 @@
-var EDT = {
+﻿var EDT = {
 	ajax_url:localStorage.edtURL||'http://univ-tlse.appspot.com/edt/',
 	
 	parse:function(xml){

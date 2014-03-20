@@ -204,6 +204,7 @@ EDTController={
 		$page=this.html(EDTController.recupMsg);
 		$.ajax(EDT.ajax_url+localStorage.edtGroup,{
 			success:function(xml,fromcache){
+				console.log(fromcache);
 				if(!fromcache)
 					localStorage.edtDate=(new Date()).getFullDate();
 				var hides=JSON.parse(localStorage.edtUEhide||'[]');

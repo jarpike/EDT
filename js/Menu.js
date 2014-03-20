@@ -1,10 +1,10 @@
 var myMenu={
 	brand:{
-		myAgenda:"#",
+		'-home myAgenda':"#",
 	},
 	left :{
 //		EDT:"#EDT/show",
-		'EDT':{
+		'-calendar EDT':{
 			Mon_Groupe  :"#EDT/group",
 			Mes_Matieres:"#EDT/UE",
 			'Partage':{
@@ -12,9 +12,9 @@ var myMenu={
 				Restaurer:"#EDT/restore",
 			}
 		},
-		DM:"#DM",
-		Map:"#Map",
-		News:"#News",
+		'-briefcase DM':"#DM",
+		'-globe Map':"#Map",
+		'-comment News':"#News",
 	},
 	right:{
 		'-cog':{
@@ -32,9 +32,14 @@ var myMenu={
 }
 
 function BootstrapMenu(menu){
+	function addico(name){
+		var names=name.match(/^(-\w+)(.*)/)
+		if(names)
+			name='<span class="glyphicon glyphicon'+names[1]+'"></span> '+(names[2]||'');
+		return name;
+	}
 	function entry2bootstrap(entry,name,rec){
-		if(name[0]=='-')name='<span class="glyphicon glyphicon'+name+'"></span>';
-		
+		name=addico(name);
 		if(entry.constructor==Function)
 			entry=entry();
 		if(entry.constructor==$)
@@ -67,7 +72,7 @@ function BootstrapMenu(menu){
 	return $('<div class="container">')
 	.append($('<div class="navbar-header">')
 		.append($('<button type="button" data-toggle="collapse" data-target=".navbar-collapse">').addClass('navbar-toggle').html(bar+bar+bar))
-		.append(brand?$('<a>').addClass('navbar-brand').attr('href',menu.brand[brand]).click(BootstrapMenu.hide).html(brand):'')
+		.append(brand?$('<a>').addClass('navbar-brand').attr('href',menu.brand[brand]).click(BootstrapMenu.hide).html(addico(brand)):'')
 	).append($('<div>').addClass('collapse navbar-collapse')
 		.append($('<ul>').addClass('nav navbar-nav navbar-left' ).append(left ))
 		.append($('<ul>').addClass('nav navbar-nav navbar-right').append(right))

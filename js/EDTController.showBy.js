@@ -14,7 +14,7 @@ EDTController.showBy=function(events,names,base_date,cb,opt){
 	var events_now=opt.filter?events.filter(opt.filter,now):events;
 	this.html(opt.noHeader?'':EDTController.createHeader(events,names,now,opt.shift||0,cb));
 	if(localStorage.edtDate!=(new Date()).getFullDate())
-		this.append($('<div class="alert alert-warn">').html("Cet emploi du temps récupéré le "+localStorage.edtDate+". Vous devriez l'<a onclick=\"EDTController.refresh()\">actualiser</a> si possible."));
+		this.append($('<div class="alert alert-danger">').html("Emploi du temps récupéré le "+localStorage.edtDate+". Vous devriez l'<a onclick=\"EDTController.refresh()\">actualiser</a> si possible."));
 	if(EDTController.showBy.onshow)EDTController.showBy.onshow(events_now);
 	if(!events_now.length)
 		return this.append('<h2 class="text-center">Aucun cours :)</h2>');

@@ -13,8 +13,6 @@ EDTController.showBy=function(events,names,base_date,cb,opt){
 	if(base_date)now=base_date;
 	var events_now=opt.filter?events.filter(opt.filter,now):events;
 	this.html(opt.noHeader?'':EDTController.createHeader(events,names,now,opt.shift||0,cb));
-	if(localStorage.edtDate!=(new Date()).getFullDate())
-		this.append($('<div class="alert alert-danger">').html("Emploi du temps récupéré le "+localStorage.edtDate+". Vous devriez l'<a onclick=\"EDTController.refresh()\">actualiser</a> si possible."));
 	if(EDTController.showBy.onshow)EDTController.showBy.onshow(events_now);
 	if(!events_now.length)
 		return this.append('<h2 class="text-center">Aucun cours :)</h2>');
@@ -41,6 +39,8 @@ EDTController.showBy=function(events,names,base_date,cb,opt){
 		if(new Date()>e.date && new Date()<1*e.date+72e5)e.style='ev-now';
 		this.append(hydrate(EDTController.template,{event:e,day:d}));
 	},this);
+	if(localStorage.edtDate!=(new Date()).getFullDate())
+		this.append($('<div id="outdated" class="alert alert-danger">').html("Pensez a <a onclick=\"EDTController.refresh()\">actualiser</a> votre EDT."));
 };
 
 EDTController.showByDay =function(events,names,base_date,cb){

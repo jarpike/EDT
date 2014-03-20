@@ -47,6 +47,11 @@ a,[onclick]{cursor:pointer;}
 	display:block;
 	text-align:center;
 }
+#outdated{
+	position:fixed;
+	bottom:0;
+	right:0;
+}
 @media (min-width:  768px){.charico .glyphicon{font-size:  75px;}}
 @media (min-width:  992px){.charico .glyphicon{font-size:  97px;}}
 @media (min-width: 1200px){.charico .glyphicon{font-size: 117px;}}

@@ -18,11 +18,13 @@ $(function(){
 });
 
 onawake=function(old,now){
+	/*//must be a user action
 	if(now.getDate()!=old.getDate()){
 		for(var e in localStorage)
 			if(e.match(EDT.ajax_url))
 				localStorage.removeItem(e);
 	}
+	*/
 	onhashchange({newURL:location.href});
 }
 

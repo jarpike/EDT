@@ -134,6 +134,8 @@ EDTController={
 		});
 	},
 	UEPage:function(type){
+		if(!localStorage.edtGroup)
+			return this.html(EDTController.noGroupMsg);
 		$page=this.html(EDTController.recupMsg);
 		$.ajax(EDT.ajax_url+localStorage.edtGroup,{
 			success:function(xml){

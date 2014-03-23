@@ -6,7 +6,7 @@ $(function(){
 	$('#customJS' ).html(localStorage.customJS ||'');
 	//add top menu
 	$('body').css('padding-top',($('.navbar-fixed-top').height()||0)+'px');
-	$('body>nav').fadeOut(0).html(BootstrapMenu(myMenu)).fadeIn(1000);
+	$('body>nav').html(BootstrapMenu(myMenu));
 	//setup watchdog
 	lastSync = new Date();
 	setInterval(function(){

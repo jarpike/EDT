@@ -13,8 +13,8 @@ var myMenu={
 			}
 		},
 		'-briefcase DM':"#DM",
-		'-globe Map':"#Map",
-		'-comment News':"#News",
+		'-globe Plan':"#Map",
+		'-comment Actu':"#News",
 	},
 	right:{
 		'-cog':{

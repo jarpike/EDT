@@ -26,83 +26,7 @@ EDTController={
 			))
 		);
 	},
-	btnUE:function(event){
-		return '\
-			<div class="btn-group">\
-				<a class="btn btn-link dropdown-toggle" data-toggle="dropdown">'+
-					(event.alias||event.name)+'&nbsp;<span class="caret"></span>\
-				</a>\
-				<ul class="dropdown-menu">\
-					<li><a onclick="EDTController.hideUE  (this)">Cacher</a></li>\
-					<li><a onclick="EDTController.renameUE(this)">Renommer</a></li>\
-					<li><a onclick="EDTController.addDM   (this)">Ajouter DM</a></li>\
-					<li><a onclick="EDTController.getInfo (this)">Info brute</a></li>\
-				</ul>\
-			</div>'
-	},
-	createHeader:function(events,names,now,delta,cb){
-		$header=$('<p><div class="input-group">\
-				<span class="input-group-btn" data-delta="-'+delta+'"><a class="btn btn-default"><i class="glyphicon glyphicon-chevron-left"></i></a></span>\
-				<input class="form-control text-center" type="date" value="'+now.toISOString().substr(0,10)+'" id="datepicker"/>\
-				<a class="input-group-addon" id="datepicker_btn"    ><i class="glyphicon glyphicon-calendar"></i></a>\
-				<span class="input-group-btn" data-delta= "'+delta+'"><a class="btn btn-default"><i class="glyphicon glyphicon-chevron-right"></i></a></span>\
-		</div></p>');
-		$header.find('[data-delta]').click(function(){
-			var $picker=$('#datepicker');
-			if(!$picker.val())return;
-			var old_date=new Date.fromInput($picker.val());
-			var delta=$(this).data('delta');
-			var new_date=new Date(old_date*1 + delta*24*60*60*1000);
-			cb.call($page,events,names,new_date);
-		});
-		$header.find('input').change(function(){
-			return cb.call($page,events,names,new Date.fromInput(this.value));
-		});
-		$header.find('#datepicker_btn').datepicker({
-			orientation: "auto right",
-			format: "dd/mm/yyyy",
-			language: "fr",
-			forceParse: false,
-			daysOfWeekDisabled: "0",
-			autoclose: true,
-			todayHighlight: true
-		}).datepicker('setUTCDate',now).on('changeDate',function(ev){
-			var new_date=$(this).datepicker('getUTCDate');
-			cb.call($page,events,names,new_date);
-		});
-		return $header;
-	},
 //DOM event
-	hideUE:function(a){
-		var name=JSON.parse(decodeURI($(a).closest('[data-json]').data('json'))).name;
-		var hide=JSON.parse(localStorage.edtUEhide||'[]');
-		hide.push(name);
-		localStorage.edtUEhide=JSON.stringify(hide);
-		onhashchange({newURL:location.href});
-	},
-	renameUE:function(a){
-		var names=JSON.parse(localStorage.edtUEname||'{}');
-		var json=JSON.parse(decodeURI($(a).closest('[data-json]').data('json')));
-		var val = prompt("Entrez un nouveau nom pour "+json.name,names[json.name]||'');
-		if(!val)return;
-		names[json.name]=val;
-		localStorage.edtUEname=JSON.stringify(names);
-		onhashchange({newURL:location.href});
-	},
-	addDM:function(a){
-		var e=JSON.parse(decodeURI($(a).closest('[data-json]').data('json')));
-		var myDM={
-			title:prompt('Saisir un titre'),
-			UE   :e.name,
-			date :(new Date(e.date)),
-			desc :'',//prompt('Saisir une description'),
-			lv   :'3',//confirm('Marquer ce devoir comme important ?')?3:1,
-			done :false
-		};
-		var dms=JSON.parse(localStorage.DM||'[]');
-		dms.push(myDM);
-		localStorage.DM=JSON.stringify(dms);
-	},
 	refresh:function(){
 		if(navigator.onLine==false)
 			if(!confirm("vous ne semblez pas connecté a internet.\nVous ne pourrez donc pas re-afficher l'emploi du temps\nContinuer ?"))return;
@@ -114,12 +38,6 @@ EDTController={
 		var d=btn.dataset;
 		localStorage.edtGroup=d.id;
 		location.hash="EDT/show";
-	},
-	getInfo:function(a){
-		var json=JSON.parse(decodeURI($(a).closest('[data-json]').data('json')));
-		var msg="";
-		for(var a in json)msg+=a+":"+json[a]+'\n';
-		alert(msg);
 	},
 	hideUE2:function(btn,name){
 		var $ico=$(btn).find('.glyphicon');
@@ -161,13 +79,7 @@ EDTController={
 			<p><a href="'+url+'">'+JSON.stringify(json)+'</a></p>\
 			<p>Ou envoyer le directement par :</p>\
 			<a class="btn btn-primary" href="mailto:?body='+encodeURI(href)+'&subject=Mon emploi du temps"><i class="glyphicon glyphicon-envelope"></i> Mail</a>\
-			<a class="btn btn-primary" href="sms:?body='+encodeURI(href.replace('#','%23'))+'"><i class="glyphicon glyphicon-comment"></i> SMS</a>\
-			<p><div class="alert alert-info"><b>Info :</b> \
-				Le lien hypertext peut ne pas etre reconnue dans son intégralitée \
-				(a cause des certain characters speciaux). \
-				Copier coller tout simplement le contenu du Mail/SMS \
-				dans la barre URL de votre navigateur pour palier ce probleme.\
-			</div></p>\
+			<a class="btn btn-primary" href="sms:?body='+encodeURIComponent(encodeURI(href))+'"><i class="glyphicon glyphicon-comment"></i> SMS</a>\
 			');
 	},
 	importPage:function(json){
@@ -184,7 +96,8 @@ EDTController={
 		//import json
 		for(attr in json)
 			localStorage[attr]=json[attr];
-		this.html(Object.keys(json).length+' imports effectués avec succes !');
+		//this.html(Object.keys(json).length+' imports effectués avec succes !');
+		location.hash="EDT/show";
 	},
 	restorePage:function(){
 		//remove current pref

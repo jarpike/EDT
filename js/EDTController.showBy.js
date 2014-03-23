@@ -20,7 +20,7 @@ EDTController.template='\
 var lastTouchStartPos=0;
 addEventListener('touchstart', function(e) {
 	if (e.targetTouches.length!=2)return;
-	pos=e.targetTouches[0].pageX;
+	lastTouchStartPos=e.targetTouches[0].pageX;
 	e.preventDefault();
 }, false);
 addEventListener('touchend', function(e) {

@@ -102,19 +102,33 @@ EDTController.createHeader=function(events,names,now,delta,reload,cb){
 	return $header;
 };
 
+EDTController.colors={
+	COURS:"bg-info",
+	'COURS/TD':"bg-danger",
+	TD:"bg-danger",
+	TP:"bg-success",
+	SOUTENANCE:"bg-warning"
+};
+
 EDTController.showBy=function(events,names,base_date,cb,opt){
-	$page=this;
+	
+	var legend='<div class="dropdown pull-right">\
+		<a class="btn dropdown-toggle" data-toggle="dropdown">Legende <span class="caret"></span></a>\
+		<ul class="dropdown-menu">'
+	for(var c in EDTController.colors)
+		legend+='<li class="'+EDTController.colors[c]+'"><a>'+c+'</a></li>';
+	legend+='</ul></div>';
+	
 	var now=new Date((opt.delta||0)+1*(new Date()));
 	if(base_date)now=base_date;
 	var events_now=opt.filter?events.filter(opt.filter,now):events;
 	var reload=localStorage.edtDate!=(new Date()).getFullDate();
 	this.html(opt.noHeader?'':EDTController.createHeader(events,names,now,opt.shift,reload,cb));
-//	if(localStorage.edtDate!=(new Date()).getFullDate())
-//		this.append($('<div id="outdated" class="alert alert-danger alert-dismissable">').html('<a class="close" data-dismiss="alert">&times;</a> Pensez a <a onclick="EDTController.refresh()">actualiser</a> votre EDT.'));
 	if(EDTController.showBy.onshow)
 		EDTController.showBy.onshow(events_now);
 	if(!events_now.length)
 		return this.append('<h2 class="text-center">Aucun cours :)</h2>');
+	this.append(legend);
 	var day='',month="";
 	events_now.forEach(function(e){
 		var d='';
@@ -130,7 +144,7 @@ EDTController.showBy=function(events,names,base_date,cb,opt){
 			if(opt.showDay)
 				this.append('<h3>'+day+'</h3>');
 		}
-		e.bg={COURS:"bg-info",'COURS/TD':"bg-danger",TD:"bg-danger",TP:"bg-success",SOUTENANCE:"bg-warning"}[e.type]||'';
+		e.bg=EDTController.colors[e.type]||'';
 		e.salle=e.room.replace(/FSI ?\/ ?/g,'').replace(/"/g,"");
 		e.alias =names[e.name||'?']||e.name||"?";
 		e.style="";

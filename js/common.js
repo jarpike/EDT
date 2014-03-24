@@ -29,6 +29,10 @@ onawake=function(old,now){
 }
 
 onhashchange=function(event){
+	if(event.newURL==undefined || event.oldURL==undefined){//IE
+		event.newURL=location.href;
+		event.oldURL=location.href;
+	}
 	function getHash(url){return (url.match(/#.*/)||['#'])[0];}
 	//don't change url on internal job
 	if(onhashchange.internal==getHash(event.newURL))

@@ -78,13 +78,14 @@ EDTController={
 			<p>Partagez ce lien <i class="text-muted">(btn droit > copier le lien)</i>:</p>\
 			<p><a href="'+url+'">'+JSON.stringify(json)+'</a></p>\
 			<p>Ou envoyer le directement par :</p>\
-			<a class="btn btn-primary" href="mailto:?body='+encodeURI(href)+'&subject=Mon emploi du temps"><i class="glyphicon glyphicon-envelope"></i> Mail</a>\
+			<a class="btn btn-primary" href="mailto:?body='+encodeURIComponent(encodeURI(href))+'&subject=Mon emploi du temps"><i class="glyphicon glyphicon-envelope"></i> Mail</a>\
 			<a class="btn btn-primary" href="sms:?body='+encodeURIComponent(encodeURI(href))+'"><i class="glyphicon glyphicon-comment"></i> SMS</a>\
 			');
 	},
-	importPage:function(json){
+	importPage:function(){
+		var json=Array.prototype.slice.call(arguments,0).join('/');
 		if(!json)return this.html('aucun message');
-		json=JSON.parse(decodeURI(json));
+		json=JSON.parse(decodeURIComponent(decodeURI(json)));
 		if(confirm('Sauvegarder votre profil actuel ?\nAinsi, vous pourrez le restaurer ulterieurement.'))
 			for(attr in localStorage)if(attr.match(/^edt/)){//move every edt to _edt
 				localStorage['_'+attr]=localStorage[attr];
@@ -159,7 +160,7 @@ EDTController={
 										<span class="glyphicon glyphicon-eye-'+(ue.hide?'close':'open')+'"></span>\
 									</a>\
 								</span>\
-								<input value="'+(ue.name||'')+'" class="form-control" type="text"\
+								<input placeholder="Nouveau nom" value="'+(ue.name||'')+'" class="form-control" type="text"\
 								onkeyup="EDTController.renameUE2(\''+name+'\',event.target.value)">\
 							</div>\
 						</div>\

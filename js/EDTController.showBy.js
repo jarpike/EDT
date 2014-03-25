@@ -68,9 +68,9 @@ EDTController.btn={
 		alert(msg);
 	},
 };
-
+EDTController.skipDays=[6,0];//sam,dim
 EDTController.createHeader=function(events,names,now,delta,reload,cb){
-	$header=$('<div style="padding:15px;" class="input-group">'+
+	$header=$('<p style="height: 40px;"></p><div style="position:fixed;top:60px;z-index:999" class="container input-group">'+
 		(delta?'<span class="input-group-btn" data-delta="-'+delta+'"><a class="btn btn-default"><i class="glyphicon glyphicon-chevron-left" ></i></a></span>':'')+
 		'<a class="input-group-addon" id="datepicker_btn" ><i class="glyphicon glyphicon-calendar"></i></a>'+
 		'<input class="form-control text-center" type="date" value="'+now.toISOString().substr(0,10)+'" id="datepicker"/>'+
@@ -83,6 +83,13 @@ EDTController.createHeader=function(events,names,now,delta,reload,cb){
 		var old_date=new Date.fromInput($picker.val());
 		var delta=$(this).data('delta');
 		var new_date=new Date(old_date*1 + delta*24*60*60*1000);
+		//skip days (day view only)
+		if(Math.abs(delta)==1){
+			for(var i=0;i<7;i++){
+				if(EDTController.skipDays.indexOf(new_date.getUTCDay())==-1)break;
+				new_date=new Date(new_date*1 + delta*24*60*60*1000);
+			}
+		}
 		cb.call($page,events,names,new_date);
 	});
 	$header.find('input').change(function(){
@@ -92,7 +99,7 @@ EDTController.createHeader=function(events,names,now,delta,reload,cb){
 		format: "dd/mm/yyyy",
 		language: "fr",
 		forceParse: false,
-		daysOfWeekDisabled: "0",
+		daysOfWeekDisabled: EDTController.skipDays,
 		autoclose: true,
 		todayHighlight: true
 	}).datepicker('setUTCDate',now).on('changeDate',function(ev){
@@ -104,14 +111,13 @@ EDTController.createHeader=function(events,names,now,delta,reload,cb){
 
 EDTController.colors={
 	COURS:"bg-info",
-	'COURS/TD':"bg-danger",
 	TD:"bg-danger",
 	TP:"bg-success",
-	SOUTENANCE:"bg-warning"
+	SOUTENANCE:"bg-primary",
+	EXAM:"bg-primary",
 };
 
 EDTController.showBy=function(events,names,base_date,cb,opt){
-	
 	var legend='<div class="dropdown pull-right">\
 		<a class="btn dropdown-toggle" data-toggle="dropdown">Legende <span class="caret"></span></a>\
 		<ul class="dropdown-menu">'
@@ -144,7 +150,10 @@ EDTController.showBy=function(events,names,base_date,cb,opt){
 			if(opt.showDay)
 				this.append('<h3>'+day+'</h3>');
 		}
-		e.bg=EDTController.colors[e.type]||'';
+		e.bg='';
+		for(var c in EDTController.colors)
+			if(e.type.match(new RegExp(c,'i')))
+				e.bg=EDTController.colors[c];
 		e.salle=e.room.replace(/FSI ?\/ ?/g,'').replace(/"/g,"");
 		e.alias =names[e.name||'?']||e.name||"?";
 		e.style="";

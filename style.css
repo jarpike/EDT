@@ -30,7 +30,7 @@ a,[onclick]{cursor:pointer;}
 	background-color: inherit;
 }
 .event a,.event a:hover{
-	color:initial;
+	color: inherit;
 }
 .ev-past>a,.ev-past>code,.ev-past .btn{
 	opacity:0.5 !important;

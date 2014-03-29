@@ -1,4 +1,12 @@
 @media(max-width:767px){.navbar-form{margin:0;}}
+@media(max-height:480px){
+	.nav > li{display: inline-block;vertical-align: top;}
+	.navbar-form{margin:0;}
+	.navbar-left{float: left;}
+	.navbar-right{float: right;}
+	.navbar-right>li{width: 180px;}
+	.navbar-right>li>a{text-align: right;}
+}
 .dropdown-menu > .divider:first-child {display: none;}
 a,[onclick]{cursor:pointer;}
 .templateContainer{display:none;}

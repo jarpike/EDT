@@ -6,12 +6,12 @@ var EDT = {
 			var e=elem.querySelectorAll(path);
 			return e?[].slice.call(e).map(function (a) {return a.textContent;}):[];
 		}
-		function getEventDate(event,weeks){
+		function getEventDate(event,attr,weeks){
 			for(var c=0;c<event.week.length;c++){
 				if(event.week[c]!='Y')continue;
 				for(var w in weeks){
 					if(weeks[w].event!=c)continue;
-					var t=event.time.match(/\d+/g);
+					var t=event[attr].match(/\d+/g);
 					return new Date(weeks[w].date*1 + event.nday*864e5 + (t[0]*60+t[1]*1)*6e4);
 				}
 			}
@@ -29,6 +29,7 @@ var EDT = {
 			var event={
 				nday:qsa(e,'day')[0],
 				time:qsa(e,'starttime')[0],
+				endt:qsa(e,'endtime')[0],
 				type:qsa(e,'category')[0],
 				week:qsa(e,'rawweeks')[0],
 				room:qsa(e,'resources>room  >item').join('\n'),
@@ -38,7 +39,9 @@ var EDT = {
 			};
 			//poly event test => 0 found => see ASSERT
 			if(event.week.match(/Y/g,'').length>1)console.warn('poly event',event);
-			event.date=getEventDate(event,weeks);
+			event.date=getEventDate(event,'time',weeks);
+			event.endt=getEventDate(event,'endt',weeks);
+			event.size=new Date(event.endt-event.date);
 			return event;
 		}).sort(function (a,b){return a.date-b.date;});
 		//window.edt={weeks:weeks,events:events};

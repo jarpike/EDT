@@ -35,8 +35,7 @@ EDTController={
 		onhashchange({newURL:location.href});
 	},
 	register:function(btn){
-		var d=btn.dataset;
-		localStorage.edtGroup=d.id;
+		localStorage.edtGroup=btn.title;
 		location.hash="EDT/show";
 	},
 	hideUE2:function(btn,name){
@@ -192,7 +191,7 @@ EDTController={
 						$.map(v,function(v){
 							return '<button type="button" onclick="EDTController.register(this)"\
 							class="btn btn-sm btn-default '+(v.id==localStorage.edtGroup?'btn-success':'')+'"\
-							data-id="'+v.id+'" data-group="'+v.group+'" data-promo="'+v.promo+'">'+
+							title="'+v.id+'" data-group="'+v.group+'" data-promo="'+v.promo+'">'+
 							v.group+
 							'</button>';
 						}).join('')

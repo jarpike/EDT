@@ -53,6 +53,8 @@ onhashchange=function(event){
 	var result=page.apply($target,url.slice(2));
 	if(result===false)
 		return onhashchange.internal=document.location.hash=getHash(event.oldURL);
+	//
+	BootstrapMenu.hide();
 };
 
 $.ajaxPrefilter(function(opt,_opt,jqXHR){
@@ -71,7 +73,9 @@ $.ajaxPrefilter(function(opt,_opt,jqXHR){
 });
 
 function hydrate(str,my){
-	return str.replace(/{{(.*?)}}/g,function(a,b){return eval(b);})
+	return str
+	.replace(/\{\[([\w-]+)\]\}/g,'<span class="glyphicon glyphicon-$1"></span>')
+	.replace(/{{(.*?)}}/g,function(a,b){return eval(b);})
 }
 Date.fromInput=function(str){
 	var d=str.match(/(\d+)\/(\d+)\/(\d+)/);// dd/mm/yyyy

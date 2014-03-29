@@ -1,16 +1,16 @@
 EDTController.template='\
-	<div class="event {{my.event.style}} {{my.event.bg}}" \
+	<div class="event {{my.event.style}} {{my.event.bg}}" style="margin-top:{{my.event.margin/2}}em" \
 		data-json="{{encodeURI(JSON.stringify(my.event))}}">\
-		&nbsp;<code>{{my.day}}{{my.event.date.getFullTime()}}</code>\
+		&nbsp;<code>{{my.day}}{{my.event.date.getFullTime()}}{{my.event.size*1!=72e5?" ["+my.event.size.toISOString().substr(11,5)+"]":""}}</code>\
 		<div class="btn-group">\
 			<a class="btn btn-link dropdown-toggle" data-toggle="dropdown">\
 				{{my.event.alias||my.event.name}}&nbsp;<span class="caret"></span>\
 			</a>\
 			<ul class="dropdown-menu">\
-				<li><a onclick="EDTController.btn.hideUE  (this)">Cacher</a></li>\
-				<li><a onclick="EDTController.btn.renameUE(this)">Renommer</a></li>\
-				<li><a onclick="EDTController.btn.addDM   (this)">Ajouter DM</a></li>\
-				<li><a onclick="EDTController.btn.getInfo (this)">Info brute</a></li>\
+				<li><a onclick="EDTController.btn.hideUE  (this)">{[eye-close]} Cacher</a></li>\
+				<li><a onclick="EDTController.btn.renameUE(this)">{[pencil]}    Renommer</a></li>\
+				<li><a onclick="EDTController.btn.addDM   (this)">{[briefcase]} Ajouter DM</a></li>\
+				<li><a onclick="EDTController.btn.getInfo (this)">{[list-alt]} Info brute</a></li>\
 			</ul>\
 		</div>\
 		<a href="#Map/search/{{my.event.salle}}">{{my.event.salle}}</a>\
@@ -136,6 +136,7 @@ EDTController.showBy=function(events,names,base_date,cb,opt){
 		return this.append('<h2 class="text-center">Aucun cours :)</h2>');
 	this.append(legend);
 	var day='',month="";
+	var prevEvent;
 	events_now.forEach(function(e){
 		var d='';
 		if(opt.showMonth)d=e.date.getFullDay(3)+' '+e.date.getUTCDate()+' : ';
@@ -159,12 +160,18 @@ EDTController.showBy=function(events,names,base_date,cb,opt){
 		e.style="";
 		if(new Date()>e.date)e.style='ev-past';
 		if(new Date()>e.date && new Date()<1*e.date+72e5)e.style='ev-now';
+		e.margin=0;
+		if(opt.margin){
+			if(prevEvent)
+				e.margin=Math.max((((e.date-prevEvent.endt)/(60*60*1000))-0.25),e.margin);
+			prevEvent=e;
+		}
 		this.append(hydrate(EDTController.template,{event:e,day:d}));
 	},this);
 };
 
 EDTController.showByDay =function(events,names,base_date,cb){
-	var opt={delta:36e5  ,shift:1,showDay:true,filter:function(e){return e.date.toInputDate()==this.toInputDate()}};
+	var opt={delta:36e5  ,shift:1,showDay:true,filter:function(e){return e.date.toInputDate()==this.toInputDate()},margin:true};
 	return EDTController.showBy.call(this,events,names,base_date,EDTController.showByDay,opt);//+6h shifted date
 };
 

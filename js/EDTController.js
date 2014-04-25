@@ -38,7 +38,7 @@ EDTController={
 		localStorage.edtGroup=btn.title;
 		location.hash="EDT/show";
 	},
-	hideUE2:function(btn,name){
+	UEhide:function(name,btn){
 		var $ico=$(btn).find('.glyphicon');
 		var closed=$ico.hasClass('glyphicon-eye-open');
 		var hides=JSON.parse(localStorage.edtUEhide||'[]');
@@ -49,37 +49,22 @@ EDTController={
 			$ico.removeClass().addClass('glyphicon glyphicon-eye-open');
 			hides.splice(hides.indexOf(name), 1);
 		}
+		$ico.closest('.input-group').find('input').attr('disabled',closed);
 		localStorage.edtUEhide=JSON.stringify(hides);
 	},
-	renameUE2:function(name,alias){
+	UErename:function(name,alias){
 		var names=JSON.parse(localStorage.edtUEname||'{}');
 		names[name]=alias;
 		localStorage.edtUEname=JSON.stringify(names);
 	},
 //Pages
-	recupMsg:'\
-		<p><div class="progress progress-striped active">\
-			<div class="progress-bar" style="width: 100%">\
-				Récuperation des données ...<a href="#" style="color: inherit;"><u>Recharger</u></a> si bloqué.\
-			</div>\
-		</div></p>\
-		',
-	noGroupMsg:'\
-		<h1>Oups ! Aucun group choisi !</h1>\
-		<h1><small>Pourquoi ne pas aller en <a href="#EDT/group">choisir</a> un ?</small></h1>',
 	exportPage:function(){
 		var json={};
 		for(attr in localStorage)if(attr.match(/^edt/))
 			json[attr]=localStorage[attr];
 		var url='#EDT/import/'+encodeURI(JSON.stringify(json));
-		var href=location.href.replace(location.hash,'')+url
-		this.html('<h2>Exporter mon emploi du temps</h2>\
-			<p>Partagez ce lien <i class="text-muted">(btn droit > copier le lien)</i>:</p>\
-			<p><a href="'+url+'">'+JSON.stringify(json)+'</a></p>\
-			<p>Ou envoyer le directement par :</p>\
-			<a class="btn btn-primary" href="mailto:?body='+encodeURIComponent(encodeURI(href))+'&subject=Mon emploi du temps"><i class="glyphicon glyphicon-envelope"></i> Mail</a>\
-			<a class="btn btn-primary" href="sms:?body='+encodeURIComponent(encodeURI(href))+'"><i class="glyphicon glyphicon-comment"></i> SMS</a>\
-			');
+		var href=location.href.replace(location.hash,'')+url;
+		this.html(hydrate(EDTView.template_export,{url:url,json:json,href:href}));
 	},
 	importPage:function(){
 		var json=Array.prototype.slice.call(arguments,0).join('/');
@@ -113,8 +98,8 @@ EDTController={
 	},
 	showPage:function(){
 		if(!localStorage.edtGroup)
-			return this.html(EDTController.noGroupMsg);
-		$page=this.html(EDTController.recupMsg);
+			return this.html(EDTView.noGroupMsg);
+		$page=this.html(EDTView.recupMsg);
 		$.ajax(EDT.ajax_url+localStorage.edtGroup,{
 			success:function(xml,fromcache){
 				if(!fromcache)
@@ -124,21 +109,23 @@ EDTController={
 				var timetable=(new DOMParser()).parseFromString(xml,"text/xml").documentElement;
 				var evts=EDT.parse(timetable).events.filter(function(e){return hides.indexOf(e.name)==-1;});
 				var methName='showBy'+(localStorage.edtView||'Day');
-				if(!EDTController[methName])return $page.html('Method "'+methName+'" not found');
-				EDTController[methName].call($page,evts,names);
+				if(!EDTView[methName])return $page.html('Method "'+methName+'" not found');
+				EDTView[methName].call($page,evts,names);
 			},
 			error:function(xhr,msg){
-				$page.html("erreur lors de la récupération de l'emploi du temps : "+msg);
+				$page.html(EDTView.errorMsg+msg);
 			}
 		});
 	},
 	UEPage:function(type){
 		if(!localStorage.edtGroup)
-			return this.html(EDTController.noGroupMsg);
-		$page=this.html(EDTController.recupMsg);
+			return this.html(EDTView.noGroupMsg);
+		$page=this.html(EDTView.recupMsg);
 		$.ajax(EDT.ajax_url+localStorage.edtGroup,{
 			success:function(xml){
-				$page.html('<h1>Gestion des Matieres</h1>');
+				$page.html("<h1>Gestion des Matieres</h1>\
+				<p>Cette page vous permet de cacher les matières que vous n'avez pas\
+				et de renommer les matieres restantes.</p>");
 				var hides=JSON.parse(localStorage.edtUEhide||'[]');
 				var names=JSON.parse(localStorage.edtUEname||'{}');
 				var timetable=(new DOMParser()).parseFromString(xml,"text/xml").documentElement;
@@ -146,33 +133,17 @@ EDTController={
 				$.map(EDT.parse(timetable).events,function(a){if(!a.name)return;
 					UEs[a.name]={hide:hides.indexOf(a.name)>=0,name:names[a.name]}
 				});
-				$form=$('<form>').addClass('form-horizontal');
-				$.map(UEs,function(ue,name){$form.append('\
-					<div class="row">\
-						<label class="col-xs-5 control-label">'+name+'</label>\
-						<div class="col-xs-5">\
-							<div class="input-group">\
-								<span class="input-group-btn">\
-									<a title="cacher/afficher" class="btn btn-default"\
-									  onclick="EDTController.hideUE2(this,\''+name+'\')">\
-										<span class="glyphicon glyphicon-eye-'+(ue.hide?'close':'open')+'"></span>\
-									</a>\
-								</span>\
-								<input placeholder="Nouveau nom" value="'+(ue.name||'')+'" class="form-control" type="text"\
-								onkeyup="EDTController.renameUE2(\''+name+'\',event.target.value)">\
-							</div>\
-						</div>\
-					</div>'
-				)});
-				$page.append($form);
+				$.map(UEs,function(ue,name){
+					$page.append(hydrate(EDTView.template_UE,{name:name,ue:ue}));
+				});
 			},
 			error:function(xhr,msg){
-				$page.html("erreur lors de la récupération de l'emploi du temps : "+msg);
+				$page.html(EDTView.errorMsg+msg);
 			}
 		});
 	},
 	groupPage:function(){
-		$page=this.html(EDTController.recupMsg);
+		$page=this.html(EDTView.recupMsg);
 		$.ajax(EDT.ajax_url,{
 			success:function(html){
 				//group by cursus name

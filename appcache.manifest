@@ -1,5 +1,5 @@
 CACHE MANIFEST
-#V11
+#V13
 CACHE:
 #CDN
 http://code.jquery.com/jquery-1.10.2.min.js
@@ -28,12 +28,16 @@ home.html
 js/common.js
 js/Controller.js
 js/DMController.js
+js/DMModel.js
+js/DMView.js
 js/EDTController.js
 js/EDTModel.js
+js/EDTView.js
 js/MapController.js
-js/NewsController.js
+js/MapModel.js
 js/Menu.js
-js/EDTController.showBy.js
+js/NewsController.js
+js/NewsView.js
 
 NETWORK:
 *

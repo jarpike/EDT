@@ -32,9 +32,9 @@ var EDT = {
 				endt:qsa(e,'endtime')[0],
 				type:qsa(e,'category')[0],
 				week:qsa(e,'rawweeks')[0],
-				room:qsa(e,'resources>room  >item').join('\n'),
+				note:qsa(e,'notes')[0],
+				room:qsa(e,'resources>room  >item'),
 				prof:qsa(e,'resources>staff >item').join('\n'),
-				note:qsa(e,'resources>notes >item').join(''),
 				name:qsa(e,'resources>module>item')[0]//poly module ?! why.jpg
 			};
 			//poly event test => 0 found => see ASSERT
